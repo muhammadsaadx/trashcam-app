@@ -1,0 +1,64 @@
+.sidebar-logo img {
+  width: 70%; /* Width of the image */
+  height: 70%; /* Height of the image */
+  margin-top: 10px;
+  filter: brightness(0) saturate(300%) invert(38%) sepia(670%) saturate(300%) hue-rotate(90deg) brightness(60%) contrast(100%); /* Filter for dark green */
+}
+
+.sidebar-search {
+  width: 80%; /* Set the desired width */
+  margin: 0 auto; /* Center it horizontally */
+  margin-bottom: 20px; /* Space below the search bar */
+}
+
+.search-container {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center vertically */
+  border: 1px solid #cfd8dc; /* Light gray border */
+  border-radius: 20px; /* Rounded corners */
+  background-color: white; /* White background */
+  padding: 8px; /* Padding around the input */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.search-input {
+  width: 100%; /* Full width of the parent container */
+  border: none; /* Remove border */
+  outline: none; /* Remove outline on focus */
+  background-color: transparent; /* Transparent background to match parent */
+  color: #333; /* Text color */
+  font-size: 1rem; /* Font size */
+}
+
+.search-icon {
+  color: #555; /* Icon color */
+  margin-right: 10px; /* Space between icon and input */
+}
+
+
+
+.sidebar-nav {
+  flex-grow: 1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+
+}
+
+.menu-badge {
+  background-color: transparent; /* Make the fill transparent */
+  color: #065F4B; /* Text color */
+  border: 1px solid #065F4B; /* Set the stroke (border) color */
+  border-radius: 12px; /* Rounded corners */
+  padding: 2px 6px; /* Padding around the text */
+  font-size: 0.75rem; /* Font size */
+  margin-left: auto; /* Space to the left */
+}
+
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #2e3b4e;
+}
+

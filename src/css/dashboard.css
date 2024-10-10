@@ -1,0 +1,62 @@
+.dashboard {
+  background-color: #f4f7fc;
+  padding: 20px;
+  min-height: 100vh; /* Ensure the dashboard content stretches to fill the height */
+  flex: 1;
+  overflow-y: auto; /* Allows scrolling if the content is taller than the viewport */
+}
+
+
+.dashboard-header {
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.stats-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stats-card h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.stats-card p {
+  margin: 10px 0 0;
+  font-size: 1rem;
+}
+
+.stats-graph {
+  grid-column: span 2;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.report-list li {
+  margin-bottom: 10px;
+  background-color: #e0e7ff;
+  padding: 10px;
+  border-radius: 5px;
+}
