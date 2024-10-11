@@ -7,9 +7,10 @@ body .sidebar {
   top: 0;
   left: 0;
   z-index: 1000; /* Ensure it is above other content */
-  background-color: #004938;
+  background-color: #FFFFFF;
   
 }
+
 
 
 .sidebar-logo img {
@@ -22,8 +23,8 @@ body .sidebar {
 
 .sidebar-search {
   width: 90%;
-  margin-top: 20px;
-  margin-left: 10px;
+  margin-top: 40px;
+  margin-left: 15px;
   margin-bottom: 20px;
 }
 

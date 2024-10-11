@@ -5,31 +5,35 @@
   width: 100vw; /* Fixed width for sidebar */
   top: 0;
   left: 300px;
-  background-color: #ffffff;
+  background-color: #F4F7F8;
 }
 
-
-
 .dashboard-header {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1rem;
+  color: #212529;
+  padding-left: 40px;
 }
 
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-left: 50px;
+}
+
+.chart-row {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
 .chart-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 25px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 70%;
-  max-width: 700px;
+  width: 100%;
+  max-width: 38%; /* Allow two charts to be side-by-side */
 }
 
 .chart-header {
@@ -41,21 +45,48 @@
 
 .chart-wrapper {
   width: 100%;
-  height: 400px; /* Set a fixed height that matches the Recharts container */
+  height: 300px; /* Set a fixed height that matches the Recharts container */
+  overflow: hidden; /* Ensures the chart content doesn't overflow the rounded corners */
 }
 
-.view-report {
-  color: #4CAF50;
-  background: none;
-  border: 1px solid #4CAF50;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s, color 0.3s;
+
+.statistics-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
 }
 
-.view-report:hover {
-  background-color: #4CAF50;
-  color: white;
+.statistics-card {
+  background: white;
+  border-radius: 25px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 38%;
 }
+
+.offenders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.offenders-table th,
+.offenders-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.offenders-table th {
+  background-color: #f4f7f8;
+  font-weight: 600;
+}
+
+.offenders-table tr:hover {
+  background-color: #80C77F;
+}
+
+
+
+
