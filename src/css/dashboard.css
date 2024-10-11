@@ -1,62 +1,61 @@
+/* frontend/src/css/dashboard.css */
 .dashboard {
-  background-color: #f4f7fc;
-  padding: 20px;
-  min-height: 100vh; /* Ensure the dashboard content stretches to fill the height */
-  flex: 1;
-  overflow-y: auto; /* Allows scrolling if the content is taller than the viewport */
+  position: fixed;
+  height: 100vh; /* Keeps the sidebar full height */
+  width: 100vw; /* Fixed width for sidebar */
+  top: 0;
+  left: 300px;
+  background-color: #ffffff;
 }
+
 
 
 .dashboard-header {
+  font-size: 2.5rem;
+  font-weight: bold;
   margin-bottom: 20px;
-}
-
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 2rem;
+  color: #333;
 }
 
 .dashboard-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.stats-card {
-  background-color: #fff;
+.chart-card {
+  background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 70%;
+  max-width: 700px;
 }
 
-.stats-card h2 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.stats-card p {
-  margin: 10px 0 0;
-  font-size: 1rem;
-}
-
-.stats-graph {
-  grid-column: span 2;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.report-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.report-list li {
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
-  background-color: #e0e7ff;
-  padding: 10px;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 400px; /* Set a fixed height that matches the Recharts container */
+}
+
+.view-report {
+  color: #4CAF50;
+  background: none;
+  border: 1px solid #4CAF50;
   border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.view-report:hover {
+  background-color: #4CAF50;
+  color: white;
 }

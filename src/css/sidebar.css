@@ -1,58 +1,70 @@
+
+
+body .sidebar {
+  position: fixed;
+  height: 100vh; /* Keeps the sidebar full height */
+  width: 300px; /* Fixed width for sidebar */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it is above other content */
+  background-color: #004938;
+  
+}
+
+
 .sidebar-logo img {
-  width: 70%; /* Width of the image */
-  height: 70%; /* Height of the image */
-  margin-top: 10px;
-  filter: brightness(0) saturate(300%) invert(38%) sepia(670%) saturate(300%) hue-rotate(90deg) brightness(60%) contrast(100%); /* Filter for dark green */
+  width: 60%; /* Adjusted to fit better in the new width */
+  height: auto;
+  margin-top: 15px;
+  margin-left: 15px;
+  filter: brightness(0) saturate(300%) invert(38%) sepia(670%) saturate(300%) hue-rotate(90deg) brightness(60%) contrast(100%);
 }
 
 .sidebar-search {
-  width: 80%; /* Set the desired width */
-  margin: 0 auto; /* Center it horizontally */
-  margin-bottom: 20px; /* Space below the search bar */
+  width: 90%;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-bottom: 20px;
 }
 
 .search-container {
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center vertically */
-  border: 1px solid #cfd8dc; /* Light gray border */
-  border-radius: 20px; /* Rounded corners */
-  background-color: white; /* White background */
-  padding: 8px; /* Padding around the input */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  display: flex;
+  align-items: center;
+  border: 1px solid #cfd8dc;
+  border-radius: 20px;
+  background-color: white;
+  padding: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
-  width: 100%; /* Full width of the parent container */
-  border: none; /* Remove border */
-  outline: none; /* Remove outline on focus */
-  background-color: transparent; /* Transparent background to match parent */
-  color: #333; /* Text color */
-  font-size: 1rem; /* Font size */
+  width: 100%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #333;
+  font-size: 1rem;
 }
 
 .search-icon {
-  color: #555; /* Icon color */
-  margin-right: 10px; /* Space between icon and input */
+  color: #555;
+  margin-right: 10px;
 }
-
-
 
 .sidebar-nav {
   flex-grow: 1;
   font-family: 'Plus Jakarta Sans', sans-serif;
-
 }
 
 .menu-badge {
-  background-color: transparent; /* Make the fill transparent */
-  color: #065F4B; /* Text color */
-  border: 1px solid #065F4B; /* Set the stroke (border) color */
-  border-radius: 12px; /* Rounded corners */
-  padding: 2px 6px; /* Padding around the text */
-  font-size: 0.75rem; /* Font size */
-  margin-left: auto; /* Space to the left */
+  background-color: transparent;
+  color: #065E4A;
+  border: 1px solid #065E4A;
+  border-radius: 12px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  margin-left: auto;
 }
-
 
 .sidebar-user {
   display: flex;
@@ -61,4 +73,3 @@
   padding-top: 20px;
   border-top: 1px solid #2e3b4e;
 }
-
