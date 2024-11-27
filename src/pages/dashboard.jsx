@@ -56,7 +56,7 @@ function Dashboard() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="incidents" stroke="#4CAF50" strokeWidth={2} />
+                  <Line type="monotone" dataKey="incidents" stroke="#06715A" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

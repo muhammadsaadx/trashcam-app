@@ -17,59 +17,62 @@ const MainSidebar = ({ activePage, setActivePage }) => {
 
   return (
     <Sidebar className="sidebar">
-      <div className="sidebar-logo">
-        <img src="/logo.svg" alt="TrashCam Logo" />
-      </div>
-      <div className="sidebar-search">
-        <div className="search-container">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-input"
-          />
+      <div className="sidebar-content">
+        <div className="sidebar-logo">
+          <img src="/logo.svg" alt="TrashCam Logo" />
         </div>
+        <div className="sidebar-search">
+          <div className="search-container">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="search-input"
+            />
+          </div>
+        </div>
+        <Menu className="sidebar-nav">
+          <MenuItem
+            icon={<RiHome2Line />}
+            onClick={() => setActivePage('dashboard')}
+            active={activePage === 'dashboard'}
+          >
+            Home
+          </MenuItem>
+          <MenuItem
+            icon={<FaList />}
+            onClick={() => setActivePage('cities')}
+            active={activePage === 'cities'}
+          >
+            Cities
+          </MenuItem>
+          <MenuItem
+            icon={<TbReport />}
+            onClick={() => setActivePage('reports')}
+            active={activePage === 'reports'}
+            suffix={<span className="menu-badge">2</span>}
+          >
+            Reports
+          </MenuItem>
+          <MenuItem
+            icon={<PiMoneyWavy />}
+            onClick={() => setActivePage('fines')}
+            active={activePage === 'fines'}
+          >
+            Fines
+          </MenuItem>
+          <MenuItem
+            icon={<LuHelpCircle />}
+            onClick={() => setActivePage('help')}
+            active={activePage === 'help'}
+          >
+            Help & Support
+          </MenuItem>
+        </Menu>
       </div>
-      <Menu className="sidebar-nav">
-        <MenuItem
-          icon={<RiHome2Line />}
-          onClick={() => setActivePage('dashboard')}
-          active={activePage === 'dashboard'}
-        >
-          Home
-        </MenuItem>
-        <MenuItem
-          icon={<FaList />}
-          onClick={() => setActivePage('cities')}
-          active={activePage === 'cities'}
-        >
-          Cities
-        </MenuItem>
-        <MenuItem
-          icon={<TbReport />}
-          onClick={() => setActivePage('reports')}
-          active={activePage === 'reports'}
-          suffix={<span className="menu-badge">2</span>}
-        >
-          Reports
-        </MenuItem>
-        <MenuItem
-          icon={<PiMoneyWavy />}
-          onClick={() => setActivePage('fines')}
-          active={activePage === 'fines'}
-        >
-          Fines
-        </MenuItem>
-        <MenuItem
-          icon={<LuHelpCircle />}
-          onClick={() => setActivePage('help')}
-          active={activePage === 'help'}
-        >
-          Help & Support
-        </MenuItem>
-      </Menu>
+      <div className="green-strip"></div> {/* Green strip added as a separate div */}
     </Sidebar>
   );
 };
