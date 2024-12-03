@@ -6,7 +6,7 @@ import Login from '../pages/login'; // Make sure this import path matches your f
 import Fines from '../pages/fines'; // Import the Fines component
 
 const MainLayout = () => {
-  const [activePage, setActivePage] = useState('dashboard'); // Initially set to 'fines' to show the Fines page
+  const [activePage, setActivePage] = useState('login'); // Initially set to 'fines' to show the Fines page
 
   const renderContent = () => {
     switch (activePage) {

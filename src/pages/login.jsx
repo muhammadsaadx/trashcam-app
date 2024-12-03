@@ -1,51 +1,70 @@
-// frontend/src/pages/Login.jsx
 import React, { useState } from 'react';
 import '../css/login.css';
+import loginBackground from '../assests/images/LoginBackground.png';
+import config from '../config/config'; // Using config for API_BASE_URL
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  // Using API_BASE_URL from config
+  const API_BASE_URL = config.API_BASE_URL;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Logged in with email: ${email} and password: ${password}`);
-    // Add logic for authentication here
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login successful:', data);
+      } else {
+        const error = await response.json();
+        console.error('Login failed:', error);
+      }
+    } catch (err) {
+      console.error('Error during login:', err);
+    }
   };
 
   return (
     <div className="login-container">
+      <img src={loginBackground} alt="TrashCamLoginBackground" className="login-background" />
       <div className="login-form">
-        <h2 className="login-title">Login</h2>
-        <form onSubmit={handleLogin}>
+        <div className="sidebar-logo">
+          <img src="/logo.svg" alt="TrashCam Logo" />
+        </div>
+        <form onSubmit={handleSubmit}>
+          <h2>Login</h2>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email:</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password:</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
               required
             />
           </div>
-          <button type="submit" className="login-button">
-            Login
-          </button>
+          <button type="submit">Sign In</button>
         </form>
-        <p className="login-footer">
-          Don't have an account? <a href="/signup">Sign up</a>
-        </p>
       </div>
     </div>
   );

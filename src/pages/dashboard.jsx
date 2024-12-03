@@ -1,16 +1,6 @@
 // frontend/src/pages/Dashboard.jsx
 import React from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  BarChart,
-  Bar,
-  CartesianGrid,
-  ResponsiveContainer,
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, CartesianGrid, ResponsiveContainer,
 } from 'recharts';
 import '../css/dashboard.css';
 
