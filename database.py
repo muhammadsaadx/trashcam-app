@@ -44,5 +44,4 @@ class Database:
         cur.close()
         conn.close()
 
-        print(result)
         return result

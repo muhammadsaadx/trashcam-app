@@ -1,23 +1,32 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, EmailStr
-import hashlib
+from apis.auth.model import UserLogin
 from database import Database
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
 
 @router.post("/login")
 async def login(user: UserLogin):
-    print(user.email)  # This will print the email received
 
-    query = "SELECT * FROM users"
-    params = (user.email,)
+    query = "SELECT * FROM users WHERE email = %s AND passwordHash = %s"
+    params = (user.email, user.password)
+
     result = await Database.read_from_db(query, params)
 
-    
+   
 
-    
-    return {"message": "Login successful"}
+    if not result:
+        return {
+            "message": "Login Failed",
+            "data": result
+        }
+    else:
+        return {
+            "message": "Login successful",
+            "data": result
+        }
+
+
+
+
+   
