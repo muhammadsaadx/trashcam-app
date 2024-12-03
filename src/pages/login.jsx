@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import '../css/login.css';
 import loginBackground from '../assests/images/LoginBackground.png';
-import config from '../config/config'; // Using config for API_BASE_URL
+import config from '../config/config'; 
 
-function Login() {
+function Login({ setActivePage }) { // Accept setActivePage as a prop
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,8 +23,14 @@ function Login() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log('Login successful:', data);
+        const fetched = await response.json();
+        if(fetched.message === "Login successful") {
+            alert(fetched.message);
+            setActivePage('dashboard'); // Update the active page to 'dashboard'
+        } else {
+            // Handle login failure, you can display an error message here
+            alert('Login failed');
+        }
       } else {
         const error = await response.json();
         console.error('Login failed:', error);
