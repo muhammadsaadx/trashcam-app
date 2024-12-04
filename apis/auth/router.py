@@ -9,31 +9,28 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/login")
 async def login(user: UserLogin):
 
+    query = "SELECT * FROM users WHERE email = %s AND passwordHash = %s"
+    params = (user.email, user.password)
 
-    if user.email == "test@e.com" and user.password == "password":  # Placeholder check
-        access_token = create_access_token(data={"sub": user.email})
-        print(access_token)
-        #return {"access_token": access_token, "token_type": "bearer"}
+    result = await Database.read_from_db(query, params)
 
-
-
-    # query = "SELECT * FROM users WHERE email = %s AND passwordHash = %s"
-    # params = (user.email, user.password)
-
-    # result = await Database.read_from_db(query, params)
-
-    # if not result:
-    #     return {
-    #         "message": "Login Failed",
-    #         "data": result
-    #     }
-    # else:
-    #     return {
-    #         "message": "Login successful",
-    #         "data": result
-    #     }
+    if not result:
+        return {
+            "message": "Login Failed",
+            "data": result
+        }
+    else:
+        return {
+            "message": "Login successful",
+            "data": result
+        }
 
 
+
+    # if user.email == "test@e.com" and user.password == "password":  # Placeholder check
+    #     access_token = create_access_token(data={"sub": user.email})
+    #     print(access_token)
+    #     return {"access_token": access_token, "token_type": "bearer"}
 
 
    
