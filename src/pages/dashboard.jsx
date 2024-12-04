@@ -1,29 +1,60 @@
-// frontend/src/pages/Dashboard.jsx
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, CartesianGrid, ResponsiveContainer,
-} from 'recharts';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import '../css/dashboard.css';
+import config from '../config/config';
 
-const data = [
-  { name: 'Jun', incidents: 1800, week1: 700, week2: 1100 },
-  { name: 'Jul', incidents: 2200, week1: 900, week2: 1300 },
-  { name: 'Aug', incidents: 2100, week1: 800, week2: 1300 },
-  { name: 'Sep', incidents: 1900, week1: 1200, week2: 1300 },
-  { name: 'Oct', incidents: 2300, week1: 1000, week2: 600 },
-  { name: 'Nov', incidents: 2500, week1: 1100, week2: 1400 },
-  { name: 'Dec', incidents: 2700, week1: 900, week2: 1800 },
+const Data1 = [
+  { "month": "Jun", "incidents": 1 },
+  { "month": "Jul", "incidents": 2 },
+  { "month": "Aug", "incidents": 2 },
+  { "month": "Sep", "incidents": 1 },
+  { "month": "Oct", "incidents": 2 },
+  { "month": "Nov", "incidents": 2 },
+  { "month": "Dec", "incidents": 2 }
 ];
 
-
-
-const offenders = [
-  { name: 'Ahmed Khan', fine: 'Rs 4300', location: 'Islamabad' },
-  { name: 'John Doe', fine: '$29', location: 'Lahore' },
-  { name: 'Jane Smith', fine: '$1,230', location: 'Karachi' },
-  { name: 'Ali Raza', fine: '$199', location: 'Faisalabad' },
+const Data2 = [
+  { "month": "Jun", "incidents": 5 },
+  { "month": "Jul", "incidents": 4 },
+  { "month": "Aug", "incidents": 3 },
+  { "month": "Sep", "incidents": 7 },
+  { "month": "Oct", "incidents": 6 },
+  { "month": "Nov", "incidents": 5 },
+  { "month": "Dec", "incidents": 3000 }
 ];
 
 function Dashboard() {
+  const [data, setData] = useState(Data1); // Initial data is Data1
+  const [isToggled, setIsToggled] = useState(false); // State to handle the toggle
+
+  const API_BASE_URL = config.API_BASE_URL;
+
+  useEffect(() => {
+    // Fetch litter data from backend (if necessary)
+    axios.get(`${API_BASE_URL}/dashboard/litter-data`) // Replace with the correct API URL
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching litter data:", error);
+      });
+  }, [API_BASE_URL]);
+
+  // Function to handle toggle change
+  const handleToggleChange = () => {
+    setIsToggled((prevState) => !prevState);
+  };
+
+  // Switch between Data1 and Data2 based on the toggle state
+  useEffect(() => {
+    if (isToggled) {
+      setData(Data2);  // Set Data2 if toggle is on
+    } else {
+      setData(Data1);  // Set Data1 if toggle is off
+    }
+  }, [isToggled]); // Effect depends on the isToggled state
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -34,15 +65,20 @@ function Dashboard() {
         <div className="chart-row">
           <div className="chart-card">
             <div className="chart-header">
-              <h2>Litter Rate </h2>
-              <button className="view-report" onClick={() => alert('Report clicked')}>
-                View Report
-              </button>
+              <h2>Litter Rate</h2>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={isToggled} 
+                  onChange={handleToggleChange} 
+                />
+                <span className="slider"></span>
+              </label>
             </div>
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data}>
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
@@ -50,49 +86,6 @@ function Dashboard() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-          </div>
-
-          <div className="chart-card">
-            <div className="chart-header">
-              <h2>Weekly Comparison </h2>
-            </div>
-            <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="week1" fill="#06715A" name="Week 1" />
-                  <Bar dataKey="week2" fill="#CED4DA" name="Week 2" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        <div className="statistics-cards">
-          <div className="statistics-card">
-            <h3>Recent Offenders</h3>
-            <table className="offenders-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Fine Issued</th>
-                  <th>Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {offenders.map((offender, index) => (
-                  <tr key={index}>
-                    <td>{offender.name}</td>
-                    <td>{offender.fine}</td>
-                    <td>{offender.location}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>

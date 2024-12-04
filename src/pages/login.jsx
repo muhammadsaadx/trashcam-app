@@ -25,10 +25,11 @@ function Login({ setActivePage }) { // Accept setActivePage as a prop
       if (response.ok) {
         const fetched = await response.json();
         if(fetched.message === "Login successful") {
+
+          
             alert(fetched.message);
-            setActivePage('dashboard'); // Update the active page to 'dashboard'
+            setActivePage('dashboard'); 
         } else {
-            // Handle login failure, you can display an error message here
             alert('Login failed');
         }
       } else {
