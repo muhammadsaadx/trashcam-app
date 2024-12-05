@@ -5,7 +5,7 @@ import { FaList, FaSearch } from 'react-icons/fa';
 import { RiHome2Line } from 'react-icons/ri';
 import { TbReport } from 'react-icons/tb';
 import { PiMoneyWavy } from 'react-icons/pi';
-import { LuHelpCircle } from 'react-icons/lu';
+import { TfiHelpAlt } from "react-icons/tfi";
 import '../css/sidebar.css';
 
 const MainSidebar = ({ activePage, setActivePage }) => {
@@ -64,7 +64,7 @@ const MainSidebar = ({ activePage, setActivePage }) => {
             Fines
           </MenuItem>
           <MenuItem
-            icon={<LuHelpCircle />}
+            icon={<TfiHelpAlt />}
             onClick={() => setActivePage('help')}
             active={activePage === 'help'}
           >

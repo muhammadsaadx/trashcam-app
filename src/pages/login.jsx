@@ -27,7 +27,6 @@ function Login({ setActivePage }) { // Accept setActivePage as a prop
         if(fetched.message === "Login successful") {
 
           
-            alert(fetched.message);
             setActivePage('dashboard'); 
         } else {
             alert('Login failed');
