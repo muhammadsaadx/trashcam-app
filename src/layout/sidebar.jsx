@@ -1,10 +1,8 @@
-// frontend/src/components/sidebar/MainSidebar.jsx
 import React, { useState } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { FaList, FaSearch } from 'react-icons/fa';
 import { RiHome2Line } from 'react-icons/ri';
 import { TbReport } from 'react-icons/tb';
-import { PiMoneyWavy } from 'react-icons/pi';
 import { TfiHelpAlt } from "react-icons/tfi";
 import '../css/sidebar.css';
 
@@ -55,13 +53,6 @@ const MainSidebar = ({ activePage, setActivePage }) => {
             suffix={<span className="menu-badge">2</span>}
           >
             Reports
-          </MenuItem>
-          <MenuItem
-            icon={<PiMoneyWavy />}
-            onClick={() => setActivePage('fines')}
-            active={activePage === 'fines'}
-          >
-            Fines
           </MenuItem>
           <MenuItem
             icon={<TfiHelpAlt />}

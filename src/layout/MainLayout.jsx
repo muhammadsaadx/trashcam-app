@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MainSidebar from './sidebar';
 import Dashboard from '../pages/dashboard';
 import Login from '../pages/login'; // Make sure this import path matches your file structure
-import Fines from '../pages/fines'; // Import the Fines component
+import Reports from '../pages/reports'; 
 
 const MainLayout = () => {
   const [activePage, setActivePage] = useState('login'); // Initially set to 'login' page
@@ -13,8 +13,8 @@ const MainLayout = () => {
         return <Login setActivePage={setActivePage} />; // Pass setActivePage as a prop
       case 'dashboard':
         return <Dashboard />;
-      case 'fines':
-        return <Fines />;
+      case 'reports':
+        return <Reports />;
       default:
         return <Dashboard />;
     }

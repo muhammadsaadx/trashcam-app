@@ -1,0 +1,85 @@
+.Reports-list {
+  margin: 30px auto;
+  padding: 30px;
+  max-width: 1000px;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.table-container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 500px;  /* Adjust the height as per your needs */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+.table-container::-webkit-scrollbar {
+  display: none; /* Hide the scrollbar */
+}
+
+.table {
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.table-header {
+  font-weight: bold;
+  color: #333;
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 12px;
+  position: sticky;
+  top: 0; /* Stick to the top */
+  z-index: 1; /* Ensure it's above the table body content */
+}
+
+.table-row {
+  transition: background-color 0.3s ease;
+}
+
+.table-row:hover {
+  background-color: #f1f1f1;
+}
+
+.table-cell {
+  padding: 15px;
+  text-align: center;
+  color: #555;
+}
+
+.Button {
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-weight: 600;
+}
+
+.Button.Paid {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.Button.Pending {
+  background-color: #2196F3;
+  color: white;
+}
+
+.Button.Missed {
+  background-color: #F44336;
+  color: white;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
