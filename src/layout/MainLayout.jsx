@@ -3,18 +3,22 @@ import MainSidebar from './sidebar';
 import Dashboard from '../pages/dashboard';
 import Login from '../pages/login'; // Make sure this import path matches your file structure
 import Reports from '../pages/reports'; 
+import ReportDetails from '../pages/reportDetails'; // Capitalized 'ReportDetails'
 
 const MainLayout = () => {
-  const [activePage, setActivePage] = useState('login'); // Initially set to 'login' page
+  const [activePage, setActivePage] = useState('login'); 
+  const [selectedCNIC, setSelectedCNIC] = useState(''); 
 
   const renderContent = () => {
     switch (activePage) {
       case 'login':
-        return <Login setActivePage={setActivePage} />; // Pass setActivePage as a prop
+        return <Login setActivePage={setActivePage} />; 
       case 'dashboard':
         return <Dashboard />;
       case 'reports':
-        return <Reports />;
+        return <Reports setActivePage={setActivePage} setSelectedCNIC={setSelectedCNIC}/>;
+      case 'reportDetails':
+        return <ReportDetails />;
       default:
         return <Dashboard />;
     }
@@ -22,7 +26,6 @@ const MainLayout = () => {
 
   return (
     <div className="main-layout">
-      {/* Only show the sidebar when the user is logged in (not on the login page) */}
       {activePage !== 'login' && (
         <div className="sidebar">
           <MainSidebar activePage={activePage} setActivePage={setActivePage} />
