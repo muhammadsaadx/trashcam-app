@@ -1,5 +1,5 @@
-/* frontend/src/css/report.css */
-.report {
+/* frontend/src/css/Report.css */
+.Report {
 position: fixed;
 height: 100vh; /* Keeps the sidebar full height */
 width: 100vw; /* Fixed width for sidebar */
@@ -8,14 +8,14 @@ left: 300px;
 background-color: #F4F7F8;
 }
 
-.report-header {
+.Report-header {
 font-family: 'Source Sans Pro', sans-serif;
 font-size: 1rem;
 color: #212529;
 padding-left: 40px;
 }
 
-.report-content {
+.Report-content {
 display: flex;
 flex-direction: column;
 margin-left: 50px;

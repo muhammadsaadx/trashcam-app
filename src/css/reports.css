@@ -1,5 +1,27 @@
 
-
+/* frontend/src/css/Report.css */
+.report {
+  position: fixed;
+  height: 100vh; /* Keeps the sidebar full height */
+  width: 100vw; /* Fixed width for sidebar */
+  top: 0;
+  left: 300px;
+  background-color: #F4F7F8;
+  }
+  
+  .report-header {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1rem;
+  color: #212529;
+  padding-left: 40px;
+  }
+  
+  .report-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  }
+  
 
 .Reports-list {
   position: fixed;
@@ -84,8 +106,3 @@ h2 {
   color: white;
 }
 
-.filters {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}

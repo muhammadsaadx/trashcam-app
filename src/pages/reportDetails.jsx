@@ -1,25 +1,19 @@
 import React from 'react';
 import '../css/reportDetails.css';
 
-const ReportDetails = () => {
+const ReportDetails = ({ selectedReportID }) => {
 
-
+  
   return (
     <div className="Report">
-      <header className="report-header">
-        <h1>report</h1>
+      <header className="Report-header">
+        <h1>Report</h1>
       </header>
-      <div className="report-content">
-
-        
-
+      <div className="Report-content">
+        <p>Report ID: {selectedReportID}</p>
       </div>
     </div>
-
   );
-  
-  
 };
 
 export default ReportDetails;
-

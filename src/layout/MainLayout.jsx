@@ -7,7 +7,7 @@ import ReportDetails from '../pages/reportDetails'; // Capitalized 'ReportDetail
 
 const MainLayout = () => {
   const [activePage, setActivePage] = useState('login'); 
-  const [selectedCNIC, setSelectedCNIC] = useState(''); 
+  const [selectedReportID, setSelectedReportID] = useState('');
 
   const renderContent = () => {
     switch (activePage) {
@@ -16,9 +16,9 @@ const MainLayout = () => {
       case 'dashboard':
         return <Dashboard />;
       case 'reports':
-        return <Reports setActivePage={setActivePage} setSelectedCNIC={setSelectedCNIC}/>;
+        return <Reports setActivePage={setActivePage} setSelectedReportID = {setSelectedReportID}/>;
       case 'reportDetails':
-        return <ReportDetails />;
+        return <ReportDetails selectedReportID={selectedReportID} />;
       default:
         return <Dashboard />;
     }
