@@ -1,108 +1,112 @@
-
-/* frontend/src/css/Report.css */
 .report {
   position: fixed;
-  height: 100vh; /* Keeps the sidebar full height */
-  width: 100vw; /* Fixed width for sidebar */
+  height: 100vh;
+  width: 100vw;
   top: 0;
   left: 300px;
   background-color: #F4F7F8;
-  }
-  
-  .report-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.report-header {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 1rem;
   color: #212529;
   padding-left: 40px;
-  }
-  
-  .report-content {
-  display: flex;
-  flex-direction: column;
-  margin-left: 50px;
-  }
-  
-
-.Reports-list {
-  position: fixed;
-  height: 100vh; /* Keeps the sidebar full height */
-  width: 100vh;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 30px;
-  font-family: 'Roboto', sans-serif;
-  border-radius: 10px;
+  width: 100%;
 }
 
-h2 {
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
+.report-chart-card {
+  background: white;
+  border-radius: 25px;
+  width: 70%;
+  max-width: 3000px;
+  height: 90%;
+  position: relative;
+  margin-top: 0%;
+  margin-left: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
 }
 
 .table-container {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
   overflow: hidden;
-  max-height: 500px; /* Adjust the height as per your needs */
-  max-width: 1200px; /* Increased width */
-  overflow-y: auto; /* Enable scrolling */
+  max-height: 700px;
+  width: 100%;
+  overflow-y: auto;
+  z-index: 1;
+  margin-top: 30px;
+  /* Remove box-shadow to eliminate the shadow */
+  box-shadow: none !important;
 }
 
 .table-container::-webkit-scrollbar {
-  display: none; /* Hide the scrollbar */
+  display: none;
 }
 
 .table {
-  border-collapse: collapse;
+  border-collapse: collapse; /* Ensure cells are adjacent without borders */
+  background-color: white;
+  width: 100%;
+  /* Remove any border from the table */
+  border: none !important;
 }
 
-.table-header {
-  font-weight: bold;
-  color: #333;
-  background-color: #f0f0f0;
-  text-align: center;
-  padding: 12px;
-  position: sticky;
-  top: 0; /* Stick to the top */
-  z-index: 1; /* Ensure it's above the table body content */
+
+.table-row,
+.table-cell {
+  border: none !important; /* Ensure no borders on headers, rows, and cells */
+  padding: 0; /* Ensure no padding or margins causing borders */
 }
+
+
 
 .table-row {
   transition: background-color 0.3s ease;
-}
-
-.table-row:hover {
-  background-color: #f1f1f1;
+  background-color: #ffffff; /* Set row background to white */
 }
 
 .table-cell {
   padding: 15px;
   text-align: center;
-  color: #555;
+  color: black; /* Adjust color for visibility */
+  background-color: white; /* Set background color to white */
 }
 
-.Button {
-  border-radius: 20px;
-  padding: 8px 20px;
-  font-weight: 600;
+
+/* Add this to reports.css */
+
+.row-separator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;  /* You can adjust the length here */
+  height: 1px;  /* Line thickness */
+  background-color: #dcdcdc;  /* Line color */
+  margin: 0 auto;
 }
 
-.Button.Paid {
-  background-color: #4CAF50;
-  color: white;
+
+
+.table-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1; /* Ensures the header stays on top of the table rows */
 }
 
-.Button.Pending {
-  background-color: #2196F3;
-  color: white;
-}
 
-.Button.Missed {
-  background-color: #F44336;
-  color: white;
-}
 
