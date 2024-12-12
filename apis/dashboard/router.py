@@ -59,3 +59,23 @@ async def get_hot_points():
     hot_points = [[point[1], point[0]] for point in result]  
     
     return hot_points
+
+
+
+
+@router.get("/get_status_data")
+async def get_status_data():
+    query = """   
+        SELECT 
+            COUNT(reportid) AS total_reports_issued,
+            SUM(CASE WHEN fineStatus = 'Paid' THEN 1 ELSE 0 END) AS paid_reports,
+            SUM(CASE WHEN fineStatus = 'Pending' THEN 1 ELSE 0 END) AS pending_reports,
+            SUM(CASE WHEN fineStatus = 'Missed' THEN 1 ELSE 0 END) AS missed_reports
+        FROM 
+            reports;
+    """
+    
+    result = await Database.read_from_db(query, ())  
+    
+    return result
+    
