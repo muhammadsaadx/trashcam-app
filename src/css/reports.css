@@ -110,3 +110,52 @@
 
 
 
+.filters {
+  display: flex;
+  flex-wrap: wrap; /* Makes filters responsive */
+  justify-content: center; /* Centers the filters horizontally */
+  margin-bottom: 20px;
+}
+
+.filters .MuiTextField-root, 
+.filters .MuiFormControl-root {
+  min-width: 200px; 
+  max-width: 250px;
+  width: 100%;
+  margin: 10px; /* Adds some space between filter elements */
+}
+
+.filters .MuiInputBase-root {
+  border-radius: 8px;
+  background-color: #f9f9f9; 
+}
+
+.filters .MuiInputLabel-root {
+  color: #555; 
+  font-weight: bold; 
+}
+
+.filters .MuiOutlinedInput-root {
+  transition: all 0.3s ease;
+}
+
+.filters .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #06715A; 
+}
+
+.filters .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #06715A; 
+}
+
+.filters .MuiButtonBase-root {
+  background-color: #06715A;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.filters .MuiButtonBase-root:hover {
+  background-color: #045943;
+}

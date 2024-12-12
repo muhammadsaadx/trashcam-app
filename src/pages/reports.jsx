@@ -54,7 +54,7 @@ const Reports = ({ setActivePage, setSelectedReportID }) => {
   return (
     <div className="report">
       <header className="report-header">
-        <h1>Report</h1>
+        <h1>List of Fines</h1>
       </header>
 
       <div className="report-content">

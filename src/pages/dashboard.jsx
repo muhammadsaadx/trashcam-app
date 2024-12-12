@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import config from '../config/config';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -14,16 +14,16 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [hotPoints, sethotPoints] = useState([]);
+  const [statusData, setStatusData] = useState([]);
 
   useEffect(() => {
     fetchHotPoints();
+    fetchStatusData();
   }, []);
-
 
   useEffect(() => {
     fetchData(selectedYear);
   }, [selectedYear]);
-
 
   const fetchData = async (year) => {
     try {
@@ -55,13 +55,26 @@ const Dashboard = () => {
         const heatLayer = L.heatLayer(hotPoints, { radius: 25, blur: 15, maxZoom: 17 }).addTo(map);
         return () => heatLayer.remove();
       }
-    }, [map, hotPoints]);  // Depend on hotPoints to re-render heatmap when they change
+    }, [map, hotPoints]); // Depend on hotPoints to re-render heatmap when they change
   
     return null;
   };
-  
 
-
+  const fetchStatusData = async () => {
+    try {
+      const response = await axios.get(`${config.API_BASE_URL}/dashboard/get_status_data`);
+      const [totalReports, paidReports, pendingReports, missedReports] = response.data[0];
+      const formattedData = [
+        { name: 'Total', value: totalReports },
+        { name: 'Paid', value: paidReports },
+        { name: 'Pending', value: pendingReports },
+        { name: 'Missed', value: missedReports },
+      ];
+      setStatusData(formattedData);
+    } catch (error) {
+      console.error("Error fetching status data:", error);
+    }
+  };
 
   return (
     <div className="dashboard">
@@ -79,12 +92,13 @@ const Dashboard = () => {
         </div>
 
 
+        <div className='chart'>
+          <StatusBarChart data={statusData} />
+        </div>
+
       </div>
     </div>
-
   );
-  
-  
 };
 
 const ChartCard = ({ title, data, years, selectedYear, onYearChange }) => (
@@ -109,7 +123,69 @@ const ChartCard = ({ title, data, years, selectedYear, onYearChange }) => (
   </div>
 );
 
-export default Dashboard;
 
+const StatusBarChart = ({ data }) => (
+  <div className="chart-card" style={styles.chartCard}>
+    <div className="chart-header" style={styles.chartHeader}>
+      <h2 style={styles.headerText}>Report Status</h2>
+    </div>
+    <div className="chart-wrapper" style={styles.chartWrapper}>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data}>
+          <defs>
+            <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#06715A" stopOpacity={1} />
+              <stop offset="100%" stopColor="#84d8b9" stopOpacity={0.9} />
+            </linearGradient>
+          </defs>
+          <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#555' }} angle={-30} textAnchor="end" />
+          <YAxis tick={{ fontSize: 12, fill: '#555' }} />
+          <Tooltip content={({ active, payload }) => active && payload && (
+            <div style={styles.customTooltip}>
+              <p>{`${payload[0].payload.name}: ${payload[0].value}`}</p>
+            </div>
+          )} />
+          <Legend />
+          <Bar 
+            dataKey="value" 
+            fill="url(#colorGradient)" 
+            radius={[10, 10, 0, 0]} 
+            isAnimationActive={true} 
+            animationDuration={1500} 
+            label={{ position: 'top', fill: '#000', fontSize: 12 }} 
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
 
+const styles = {
+  chartCard: {
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    padding: '20px',
+    margin: '20px 0',
+  },
+  chartHeader: {
+    textAlign: 'center',
+    marginBottom: '10px',
+  },
+  headerText: {
+    fontSize: '20px',
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  chartWrapper: {
+    height: '300px',
+  },
+  customTooltip: {
+    backgroundColor: '#fff',
+    padding: '10px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+  },
+};
 
+export default StatusBarChart;

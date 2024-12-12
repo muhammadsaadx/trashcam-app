@@ -40,19 +40,19 @@ const MainSidebar = ({ activePage, setActivePage }) => {
             Home
           </MenuItem>
           <MenuItem
-            icon={<FaList />}
-            onClick={() => setActivePage('cities')}
-            active={activePage === 'cities'}
-          >
-            Cities
-          </MenuItem>
-          <MenuItem
             icon={<TbReport />}
             onClick={() => setActivePage('reports')}
             active={activePage === 'reports'}
             suffix={<span className="menu-badge">2</span>}
           >
-            Reports
+            Fines
+          </MenuItem>
+          <MenuItem
+            icon={<FaList />}
+            onClick={() => setActivePage('cities')}
+            active={activePage === 'cities'}
+          >
+            Cities
           </MenuItem>
           <MenuItem
             icon={<TfiHelpAlt />}
