@@ -140,11 +140,16 @@ const StatusBarChart = ({ data }) => (
           </defs>
           <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#555' }} angle={-30} textAnchor="end" />
           <YAxis tick={{ fontSize: 12, fill: '#555' }} />
-          <Tooltip content={({ active, payload }) => active && payload && (
-            <div style={styles.customTooltip}>
-              <p>{`${payload[0].payload.name}: ${payload[0].value}`}</p>
-            </div>
-          )} />
+                    <Tooltip
+            content={({ active, payload }) =>
+              active && payload && payload.length > 0 ? (
+                <div style={styles.customTooltip}>
+                  <p>{`${payload[0].payload.name}: ${payload[0].value}`}</p>
+                </div>
+              ) : null
+            }
+          />
+
           <Legend />
           <Bar 
             dataKey="value" 
@@ -188,4 +193,4 @@ const styles = {
   },
 };
 
-export default StatusBarChart;
+export default Dashboard;
