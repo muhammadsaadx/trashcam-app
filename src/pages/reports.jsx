@@ -17,6 +17,8 @@ const Reports = ({ setActivePage, setSelectedReportID }) => {
     "F-8", "F-9", "F-10", "F-11", "F-12", "F-13", "F-14", "F-15", "F-16", "F-17"
   ];
 
+  
+
   useEffect(() => {
     fetchReportsData();
   }, [searchTerm, fineStatus, location]);
