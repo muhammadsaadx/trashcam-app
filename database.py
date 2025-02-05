@@ -13,8 +13,6 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 
 class Database:
-    
-
     @staticmethod
     async def generate_id() -> str:
         return str(uuid.uuid4())
