@@ -9,8 +9,7 @@ CREATE TABLE offenders (
     offenderid SERIAL PRIMARY KEY,
     name VARCHAR(100),
     cnic VARCHAR(20),
-    address TEXT,
-    offencecount INT
+    address TEXT
 );
 
 

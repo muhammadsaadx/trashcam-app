@@ -20,18 +20,5 @@ DROP TABLE IF EXISTS litter;
 DROP TABLE IF EXISTS users;
 
 
-SELECT 
-                        o.name AS name,
-                        o.cnic AS cnic,
-                        r.latitude AS location_latitude,
-                        r.longitude AS location_longitude,
-                        r.locationStr AS Location,
-                        r.fineissued AS fine,
-                        r.fineStatus as status,
-                        r.reportid AS id
-                FROM 
-                        offenders o
-                JOIN 
-                        report_offenders ro ON o.offenderid = ro.offenderid
-                JOIN 
-                        reports r ON ro.reportid = r.reportid
+
+
