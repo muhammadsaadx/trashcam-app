@@ -5,7 +5,6 @@ from database import Database
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-
 @router.post("/login")
 async def login(user: UserLogin):
     query = "SELECT * FROM users WHERE email = %s AND passwordHash = %s"
