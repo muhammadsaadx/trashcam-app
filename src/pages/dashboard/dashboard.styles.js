@@ -5,10 +5,11 @@ const styles = {
     position: 'fixed',
     height: '100vh',
     width: '100vw',
-    top: 0,
+    top: '-30px',
     left: '300px',
     backgroundColor: '#F4F7F8',
     padding: '20px',
+    fontFamily: "'Source Sans Pro', sans-serif",
   },
   dashboardHeader: {
     fontFamily: "'Source Sans Pro', sans-serif",
@@ -33,8 +34,10 @@ const styles = {
     borderRadius: '25px',
     padding: '20px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    width: '40%',
-    maxWidth: '48%',
+    flex: '1 1 400px', // Allows flexibility
+    minWidth: '320px', // Prevents shrinking too much
+    maxWidth: '38%', // Avoids going too wide
+    height: '10%', // Adapts to content
   },
   chartHeader: {
     display: 'flex',
@@ -44,7 +47,7 @@ const styles = {
   },
   chartWrapper: {
     width: '100%',
-    height: '370px',
+    height: '280px',
     overflow: 'hidden',
   },
   dropdown: {
@@ -55,9 +58,10 @@ const styles = {
   },
   mapContainer: {
     width: '40%',
-    height: '500px',
+    height: '387px',
     borderRadius: '25px',
     overflow: 'hidden',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   },
   headerText: {
     fontSize: '20px',
