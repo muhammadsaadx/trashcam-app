@@ -1,50 +1,55 @@
 from fastapi import APIRouter, HTTPException, Query
 from database import Database
-from typing import Optional
+from .service import DashboardService
+
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
-@router.get("/get_litter_data")
-async def get_litter_data(year: Optional[int] = Query(None)):
-    query = """
-        SELECT
-            TO_CHAR(timestamp, 'Mon') AS month,
-            COUNT(reportid) AS incidents
-        FROM reports
-        WHERE EXTRACT(YEAR FROM timestamp) = %s
-        GROUP BY month
-        ORDER BY MIN(EXTRACT(MONTH FROM timestamp));
-    """
-    
-    
-    result = await Database.read_from_db(query, (year,))  
-    if not result:
-        raise HTTPException(status_code=404, detail="No data found")
-    
-    formatted_result = [
-        {"month": row[0], "incidents": row[1]}  
-        for row in result
-    ]
-    
-    return formatted_result
 
 
-
-@router.get("/get_list_of_years")
-async def get_list_of_years():
-    query = """
-        SELECT DISTINCT EXTRACT(YEAR FROM timestamp) AS year
-        FROM reports
-        ORDER BY year DESC;
-    """
-    
+@router.get("/get_all_report_dates")
+async def get_all_report_dates():
+    query = "SELECT timestamp FROM reports;"
     result = await Database.read_from_db(query, ())  
 
     if not result:
         raise HTTPException(status_code=404, detail="No data found")
     
-    return result
-    
+    formatted_result = await DashboardService.format_report_dates(result)
+    return formatted_result
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @router.get("/get_hot_points")
