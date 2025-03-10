@@ -1,20 +1,15 @@
-// frontend/src/App.jsxx
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import MainLayout from './layout/MainLayout';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import AppLayout from "./layout/AppLayout";
+import Login from "./pages/login/login";
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <MainLayout />
-    </Router>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/*" element={<AppLayout />} />
+    </Routes>
   );
-}
-
-
-
+};
 
 export default App;
-
-
-
