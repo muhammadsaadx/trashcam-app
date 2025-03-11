@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import MainSidebar from "./sidebar/sidebar";
 import Dashboard from "../pages/dashboard/dashboard";
 import Reports from "../pages/listReports/listReports";
-import ReportDetails from "../pages/reportDetails";
+import ReportDetails from "../pages/reportDetails/reportDetails";
 
 const AppLayout = () => {
   const location = useLocation();
@@ -17,7 +17,7 @@ const AppLayout = () => {
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/report-details/:id" element={<ReportDetails />} />
+          <Route path="/reportDetails/:reportid" element={<ReportDetails />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>

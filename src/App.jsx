@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import AppLayout from "./layout/AppLayout";
+import AppLayout from "./layout/appLayout";
 import Login from "./pages/login/login";
 
 const App = () => {

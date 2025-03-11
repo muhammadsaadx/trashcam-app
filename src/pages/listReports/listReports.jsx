@@ -6,19 +6,19 @@ import {
 import axios from 'axios';
 import config from '../../config/config';
 import useStyles from './listReports.styles'; // Import styles
+import { useNavigate } from "react-router-dom";
 
-const Reports = ({ setActivePage, setSelectedReportID }) => {
+
+const Reports = () => {
   const classes = useStyles(); // Use styles
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [fineStatus, setFineStatus] = useState("");
   const [location, setLocation] = useState("");
   const [data, setData] = useState([]);
 
-  const islamabadSectors = [
-    "G-5", "G-6", "G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14", 
-    "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "F-5", "F-6", "F-7", 
-    "F-8", "F-9", "F-10", "F-11", "F-12", "F-13", "F-14", "F-15", "F-16", "F-17"
-  ];
+
+  const islamabadSectors = ["G-5", "G-6", "G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14", "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "F-5", "F-6", "F-7", "F-8", "F-9", "F-10", "F-11", "F-12", "F-13", "F-14", "F-15", "F-16", "F-17"];
 
   useEffect(() => {
     fetchReportsData();
@@ -47,10 +47,21 @@ const Reports = ({ setActivePage, setSelectedReportID }) => {
     Missed: "rgba(250, 200, 201, 0.5)"
   }[status] || "rgba(255, 255, 255, 1)");
 
+
+
   const handleRowClick = (row) => {
-    setSelectedReportID(row.reportid);
-    setActivePage("reportDetails");
+
+    console.log(row.reportid);
+
+    navigate(`/reportDetails/${row.reportid}`);
+
+
   };
+
+
+
+
+
 
   return (
     <div className={classes.report}>
