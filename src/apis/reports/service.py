@@ -3,7 +3,7 @@ from typing import List, Dict
 class ReportService:
     
     @staticmethod
-    def format_report_list(result: List[tuple]) -> List[Dict]:
+    def format_list_of_reports(result: List[tuple]) -> List[Dict]:
         def format_location(location: str) -> str:
             return ", ".join(location.split(", ")[:4]) if location else ""
 
@@ -24,10 +24,6 @@ class ReportService:
         ]
 
     
-
-
-
-
 
     @staticmethod
     def format_report_details(result: List[tuple]) -> List[Dict]:

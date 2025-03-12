@@ -13,6 +13,12 @@ async def get_list_of_reports(request: Request):
     fineStatus = params.get('fineStatus', '').strip() or "%"
     location = f"%{params.get('location', '').strip()}%" or "%"
 
+
+    startRow = int(params.get('startRow', '0'))  
+    endRow = int(params.get('endRow', '10'))
+    limit = endRow - startRow
+    offset = startRow
+
     query = """SELECT o.name AS name, o.cnic AS cnic, r.latitude AS location_latitude, r.longitude AS location_longitude, 
             r.locationStr AS location, r.fineissued AS fine,
             r.fineStatus AS status, r.reportid AS id
@@ -27,16 +33,20 @@ async def get_list_of_reports(request: Request):
             AND r.fineStatus ILIKE %s
             AND r.locationStr ILIKE %s
         ORDER BY 
-            r.timestamp DESC;
+            r.timestamp DESC
+        LIMIT %s OFFSET %s;
     """
 
 
+
     try:
-        result = await Database.read_from_db(query, (searchTerm, searchTerm, fineStatus, location))
+        result = await Database.read_from_db(query, (searchTerm, searchTerm, fineStatus, location, limit, offset))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    return ReportService.format_report_list(result)
+    return ReportService.format_list_of_reports(result)
+
+
 
 
 
