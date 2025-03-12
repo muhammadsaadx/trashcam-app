@@ -1,3 +1,4 @@
+
 CREATE TABLE litter (
     litterid SERIAL PRIMARY KEY,
     trashtype VARCHAR(50) UNIQUE,
@@ -11,8 +12,6 @@ CREATE TABLE offenders (
     cnic VARCHAR(20),
     address TEXT
 );
-
-
 
 -- Create the reports table with a unique constraint on a combination of infodetails and timestamp
 CREATE TABLE reports (
@@ -59,3 +58,25 @@ CREATE TABLE user_reports (
     reportid INT REFERENCES reports(reportid),
     PRIMARY KEY (userid, reportid)
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
