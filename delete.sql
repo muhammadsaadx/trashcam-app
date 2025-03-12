@@ -1,24 +1,12 @@
--- Drop the user_reports table first (because it references users and reports)
+-- Drop tables with foreign key dependencies first
 DROP TABLE IF EXISTS user_reports;
-
--- Drop the report_offenders table (because it references reports and offenders)
 DROP TABLE IF EXISTS report_offenders;
-
--- Drop the report_litter table (because it references reports and litter)
 DROP TABLE IF EXISTS report_litter;
-
--- Drop the reports table (because it is referenced by report_litter and report_offenders)
-DROP TABLE IF EXISTS reports;
-
--- Drop the offenders table (because it is referenced by report_offenders)
-DROP TABLE IF EXISTS offenders;
-
--- Drop the litter table
-DROP TABLE IF EXISTS litter;
-
--- Drop the users table (because it is referenced by user_reports)
+DROP TABLE IF EXISTS area;
 DROP TABLE IF EXISTS users;
 
-
-
-
+-- Drop parent tables
+DROP TABLE IF EXISTS reports;
+DROP TABLE IF EXISTS offenders;
+DROP TABLE IF EXISTS litter;
+DROP TABLE IF EXISTS cities;

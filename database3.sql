@@ -1,3 +1,116 @@
+-- CREATE TABLE litter (
+--     litterid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     trashtype VARCHAR(50) UNIQUE,
+--     trashamount DECIMAL
+-- );
+
+-- CREATE TABLE offenders (
+--     offenderid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     name VARCHAR(100),
+--     cnic VARCHAR(20),
+--     address TEXT
+-- );
+
+-- CREATE TABLE reports (
+--     reportid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     latitude DECIMAL,
+--     longitude DECIMAL,
+--     locationStr TEXT,
+--     timestamp TIMESTAMP,
+--     fineStatus VARCHAR(20),
+--     fineIssued VARCHAR(20),
+--     infodetails TEXT
+-- );
+
+-- CREATE TABLE report_litter (
+--     reportid UUID REFERENCES reports(reportid),
+--     litterid UUID REFERENCES litter(litterid),
+--     PRIMARY KEY (reportid, litterid)
+-- );
+
+-- CREATE TABLE report_offenders (
+--     reportid UUID REFERENCES reports(reportid),
+--     offenderid UUID REFERENCES offenders(offenderid),
+--     PRIMARY KEY (reportid, offenderid)
+-- );
+
+-- CREATE TABLE users (
+--     userid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     name VARCHAR(100) UNIQUE,
+--     phonenumber VARCHAR(20),
+--     email VARCHAR(100),
+--     passwordhash TEXT,
+--     isloggedin BOOLEAN,
+--     typeofuser VARCHAR(50)
+-- );
+
+-- CREATE TABLE user_reports (
+--     userid UUID REFERENCES users(userid),
+--     reportid UUID REFERENCES reports(reportid),
+--     PRIMARY KEY (userid, reportid)
+-- );
+
+
+
+
+
+
+
+
+-- --********************************STATIC TABLESSSSS**********************************************************************
+
+
+
+
+
+
+-- -- Static tables
+-- CREATE TABLE cities (
+--     CityID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     name VARCHAR(255) UNIQUE NOT NULL
+-- );
+
+-- CREATE TABLE area (
+--     AreaID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     name VARCHAR(255) NOT NULL,
+--     CityID UUID NOT NULL,
+--     FOREIGN KEY (CityID) REFERENCES cities(CityID) ON DELETE CASCADE
+-- );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 CREATE TABLE litter (
     litterid SERIAL PRIMARY KEY,
@@ -62,7 +175,7 @@ CREATE TABLE user_reports (
 
 
 
---********************************STATIC TABLESSSSS**********************************************************************
+--********************************STATIC TABLESSSSS
 
 CREATE TABLE cities (
     CityID SERIAL PRIMARY KEY,
