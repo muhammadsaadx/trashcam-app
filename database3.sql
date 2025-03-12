@@ -5,7 +5,6 @@ CREATE TABLE litter (
     trashamount DECIMAL
 );
 
--- Create the offenders table
 CREATE TABLE offenders (
     offenderid SERIAL PRIMARY KEY,
     name VARCHAR(100),
@@ -13,7 +12,6 @@ CREATE TABLE offenders (
     address TEXT
 );
 
--- Create the reports table with a unique constraint on a combination of infodetails and timestamp
 CREATE TABLE reports (
     reportid SERIAL PRIMARY KEY,
     latitude DECIMAL,
@@ -25,7 +23,6 @@ CREATE TABLE reports (
     infodetails TEXT
 );
 
--- Create the report_litter table with a composite primary key on reportid and litterid
 CREATE TABLE report_litter (
     reportid INT REFERENCES reports(reportid),
     litterid INT REFERENCES litter(litterid),
@@ -33,7 +30,6 @@ CREATE TABLE report_litter (
 );
 
 
--- Create the report_offenders table to establish the many-to-many relationship
 CREATE TABLE report_offenders (
     reportid INT REFERENCES reports(reportid),
     offenderid INT REFERENCES offenders(offenderid),
@@ -41,7 +37,6 @@ CREATE TABLE report_offenders (
 );
 
 
--- Create the users table with a unique constraint on name
 CREATE TABLE users (
     userid SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE,
@@ -52,7 +47,6 @@ CREATE TABLE users (
     typeofuser VARCHAR(50)
 );
 
--- Create the user_reports table with a composite primary key on userid and reportid
 CREATE TABLE user_reports (
     userid INT REFERENCES users(userid),
     reportid INT REFERENCES reports(reportid),
@@ -68,7 +62,19 @@ CREATE TABLE user_reports (
 
 
 
+--********************************STATIC TABLESSSSS**********************************************************************
 
+CREATE TABLE cities (
+    CityID SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE area (
+    AreaID SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    CityID INT NOT NULL,
+    FOREIGN KEY (CityID) REFERENCES cities(CityID) ON DELETE CASCADE
+);
 
 
 
