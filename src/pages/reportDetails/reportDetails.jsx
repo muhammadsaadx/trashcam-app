@@ -23,6 +23,13 @@ const ReportDetails = () => {
     }
   };
 
+
+
+  // DISPLAY MAP HERE LIKE THE PIN THNGY
+
+
+
+
   return (
     <div style={styles.report}>
       <header style={styles.reportHeader}>

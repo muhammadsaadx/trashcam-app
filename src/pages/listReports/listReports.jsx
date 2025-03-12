@@ -1,141 +1,145 @@
-import React, { useEffect, useState } from "react";
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
-  Paper, Button, TextField, MenuItem, Select, InputLabel, FormControl 
-} from "@mui/material";
-import axios from 'axios';
-import config from '../../config/config';
-import useStyles from './listReports.styles'; 
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress } from "@mui/material";
+import axios from "axios";
+import config from "../../config/config";
+import useStyles from "./listReports.styles";
 import { useNavigate } from "react-router-dom";
 
+const STATUS_STYLES = {
+  Paid: { border: "#98C0A1", background: "#C0F2C9" },
+  Pending: { border: "#A4A7C3", background: "#CCCFEB" },
+  Missed: { border: "#D2A0A1", background: "#FAC8C9" },
+  default: { border: "#C8C8C8", background: "#FFFFFF" },
+};
+
+const StatusButton = ({ status }) => {
+  const { border, background } = STATUS_STYLES[status] || STATUS_STYLES.default;
+  return (
+    <Button
+      style={{ backgroundColor: background, color: border, width: 100, borderRadius: 10, border: `2px solid ${border}`, padding: "8px 20px", fontWeight: 600, textTransform: "none" }}
+    >
+      {status}
+    </Button>
+  );
+};
+
 const Reports = () => {
-  const classes = useStyles(); 
+  const [startRow, setStartRow] = useState(0);
+  const [endRow, setEndRow] = useState(10);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const styles = useStyles();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [fineStatus, setFineStatus] = useState("");
-  const [location, setLocation] = useState("");
-  const [data, setData] = useState([]);
+  const [reportData, setReportData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const observer = useRef();
+  const lastReportElementRef = useCallback(node => {
+    if (isLoading || loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMoreReports();
+      }
+    }, { threshold: 0.5 });
+    
+    if (node) observer.current.observe(node);
+  }, [isLoading, loadingMore, hasMore]);
 
-  const islamabadSectors = ["G-5", "G-6", "G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14", "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "F-5", "F-6", "F-7", "F-8", "F-9", "F-10", "F-11", "F-12", "F-13", "F-14", "F-15", "F-16", "F-17"];
-
-
-
-  useEffect(() => {
-    fetchReportsData();
-  }, [searchTerm, fineStatus, location]);
-
-  const fetchReportsData = async () => {
+  const fetchReports = async (start, end) => {
     try {
-      const queryParams = new URLSearchParams({ searchTerm, fineStatus, location }).toString();
-      const response = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports?${queryParams}`);
-      console.log(response.data);
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+      const params = { startRow: start, endRow: end };
+      const { data } = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports`, { params });
+      return data;
+    } catch (err) {
+      setError("Failed to fetch reports. Please try again later.");
+      return [];
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      const data = await fetchReports(startRow, endRow);
+      setReportData(data);
+      setHasMore(data.length === (endRow - startRow));
+      setIsLoading(false);
+    })();
+  }, []); 
 
+  const loadMoreReports = async () => {
+    if (!hasMore || loadingMore) return;
+    
+    setLoadingMore(true);
+    const newStartRow = endRow;
+    const newEndRow = endRow + 10;
+    
+    const newData = await fetchReports(newStartRow, newEndRow);
+    
+    console.log(newData);
+    
+    if (newData.length === 0) {
+      setHasMore(false);
+    } else {
+      setReportData(prevData => [...prevData, ...newData]);
+      setStartRow(newStartRow);
+      setEndRow(newEndRow);
+      setHasMore(newData.length === 10);
+    }
+    
+    setLoadingMore(false);
+  };
 
+  const renderTableContent = () => {
+    if (isLoading) return <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>;
+    if (error) return <TableRow><TableCell colSpan={5} align="center" style={{ color: "red" }}>{error}</TableCell></TableRow>;
+    if (!reportData.length) return <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>;
 
-
-  const getStatusBorderColor = (status) => ({
-    Paid: "rgba(152, 192, 161, 1)",
-    Pending: "rgba(164, 167, 195, 1)",
-    Missed: "rgba(210, 160, 161, 1)"
-  }[status] || "rgba(200, 200, 200, 1)");
-
-  const getStatusColor = (status) => ({
-    Paid: "rgba(192, 242, 201, 0.5)",
-    Pending: "rgba(204, 207, 235, 0.5)",
-    Missed: "rgba(250, 200, 201, 0.5)"
-  }[status] || "rgba(255, 255, 255, 1)");
-
-  const handleRowClick = (row) => {
-    console.log(row.reportid);
-    navigate(`/reportDetails/${row.reportid}`);
+    return reportData.map(({ reportid, name, cnic, location, fine, status }, index) => (
+      <TableRow 
+        key={reportid} 
+        className={styles.tableRow} 
+        onClick={() => navigate(`/reportDetails/${reportid}`)} 
+        hover
+        ref={index === reportData.length - 1 ? lastReportElementRef : null}
+      >
+        <TableCell>{name}</TableCell>
+        <TableCell>{cnic}</TableCell>
+        <TableCell>{location}</TableCell>
+        <TableCell>{fine}</TableCell>
+        <TableCell><StatusButton status={status} /></TableCell>
+      </TableRow>
+    ));
   };
 
   return (
-    <div className={classes.report}>
-      <header className={classes.reportHeader}>
-        <h1>List of Fines</h1>
-      </header>
-
-      <div className={classes.reportContent}>
-        <div className={classes.filters}>
-          <TextField 
-            label="Search" 
-            variant="outlined" 
-            value={searchTerm} 
-            onChange={e => setSearchTerm(e.target.value)} 
-            className={classes.textField}
-          />
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Status</InputLabel>
-            <Select value={fineStatus} onChange={e => setFineStatus(e.target.value)} label="Status">
-              <MenuItem value=""><em>All</em></MenuItem>
-              {["Paid", "Pending", "Missed"].map(status => (
-                <MenuItem key={status} value={status}>{status}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Location</InputLabel>
-            <Select value={location} onChange={e => setLocation(e.target.value)} label="Location">
-              <MenuItem value=""><em>All</em></MenuItem>
-              {islamabadSectors.map((sector, index) => (
-                <MenuItem key={index} value={sector}>{sector}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-
-        <div className={classes.reportChartCard}>
-          <TableContainer component={Paper} className={classes.tableContainer}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.tableHeader}>Name</TableCell>
-                  <TableCell className={classes.tableHeader}>CNIC</TableCell>
-                  <TableCell className={classes.tableHeader}>Location</TableCell>
-                  <TableCell className={classes.tableHeader}>Fine</TableCell>
-                  <TableCell className={classes.tableHeader}>Status</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {data.map((row, index) => (
-                  <TableRow 
-                    key={row.id || index} // Ensure unique key
-                    className={classes.tableRow} 
-                    onClick={() => handleRowClick(row)}
-                  >
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.cnic}</TableCell>
-                    <TableCell>{row.location}</TableCell>
-                    <TableCell>{row.fine}</TableCell>
-                    <TableCell>
-                      <Button 
-                        style={{
-                          backgroundColor: getStatusColor(row.status),
-                          color: getStatusBorderColor(row.status),
-                          width: 100,
-                          borderRadius: 10,
-                          border: `2px solid ${getStatusBorderColor(row.status)}`,
-                          padding: "8px 20px",
-                          fontWeight: 600 
-                        }}
-                      >
-                        {row.status}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+    <div className={styles.report}>
+      <header className={styles.reportHeader}><h1>List of Fines</h1></header>
+      <div className={styles.reportContent}>
+        <TableContainer component={Paper} className={styles.tableContainer}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {["Name", "CNIC", "Location", "Fine", "Status"].map((header) => (
+                  <TableCell key={header} className={styles.tableHeader}>{header}</TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {renderTableContent()}
+              {loadingMore && (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" padding="normal">
+                    <CircularProgress size={24} />
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );

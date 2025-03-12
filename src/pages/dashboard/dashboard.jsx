@@ -30,19 +30,22 @@ const Dashboard = () => {
   const [litterLocationData, setLitterLocationData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async (endpoint, setter) => {
-      try {
-        const response = await fetch(`${config.API_BASE_URL}/dashboard/${endpoint}`);
-        const data = await response.json();
-        setter(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData("get_all_report_dates", setLitterRateData);
     fetchData("get_longitude_latitude", setLitterLocationData);
   }, []);
+
+
+
+  const fetchData = async (endpoint, setter) => {
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/dashboard/${endpoint}`);
+      const data = await response.json();
+      setter(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
 
   return (
     <div style={styles.dashboard}>
