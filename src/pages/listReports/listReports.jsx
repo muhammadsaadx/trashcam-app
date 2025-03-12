@@ -5,20 +5,20 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 import config from '../../config/config';
-import useStyles from './listReports.styles'; // Import styles
+import useStyles from './listReports.styles'; 
 import { useNavigate } from "react-router-dom";
 
-
 const Reports = () => {
-  const classes = useStyles(); // Use styles
+  const classes = useStyles(); 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [fineStatus, setFineStatus] = useState("");
   const [location, setLocation] = useState("");
   const [data, setData] = useState([]);
 
-
   const islamabadSectors = ["G-5", "G-6", "G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14", "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "F-5", "F-6", "F-7", "F-8", "F-9", "F-10", "F-11", "F-12", "F-13", "F-14", "F-15", "F-16", "F-17"];
+
+
 
   useEffect(() => {
     fetchReportsData();
@@ -28,12 +28,16 @@ const Reports = () => {
     try {
       const queryParams = new URLSearchParams({ searchTerm, fineStatus, location }).toString();
       const response = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports?${queryParams}`);
-      console.log(response.data)
+      console.log(response.data);
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
+
+
+
 
   const getStatusBorderColor = (status) => ({
     Paid: "rgba(152, 192, 161, 1)",
@@ -47,21 +51,10 @@ const Reports = () => {
     Missed: "rgba(250, 200, 201, 0.5)"
   }[status] || "rgba(255, 255, 255, 1)");
 
-
-
   const handleRowClick = (row) => {
-
     console.log(row.reportid);
-
     navigate(`/reportDetails/${row.reportid}`);
-
-
   };
-
-
-
-
-
 
   return (
     <div className={classes.report}>
@@ -82,7 +75,9 @@ const Reports = () => {
             <InputLabel>Status</InputLabel>
             <Select value={fineStatus} onChange={e => setFineStatus(e.target.value)} label="Status">
               <MenuItem value=""><em>All</em></MenuItem>
-              {["Paid", "Pending", "Missed"].map(status => <MenuItem key={status} value={status}>{status}</MenuItem>)}
+              {["Paid", "Pending", "Missed"].map(status => (
+                <MenuItem key={status} value={status}>{status}</MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
@@ -110,9 +105,9 @@ const Reports = () => {
               </TableHead>
 
               <TableBody>
-                {data.map(row => (
+                {data.map((row, index) => (
                   <TableRow 
-                    key={row.id} 
+                    key={row.id || index} // Ensure unique key
                     className={classes.tableRow} 
                     onClick={() => handleRowClick(row)}
                   >
@@ -135,7 +130,6 @@ const Reports = () => {
                         {row.status}
                       </Button>
                     </TableCell>
-                    <div className={classes.rowSeparator} />
                   </TableRow>
                 ))}
               </TableBody>
