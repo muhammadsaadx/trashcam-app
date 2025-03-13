@@ -59,8 +59,6 @@ async def get_list_of_reports(request: Request):
 
 
 
-
-
 @router.get("/get_single_report")
 async def get_single_report(report_id: str):
     query = """
@@ -90,9 +88,30 @@ async def get_single_report(report_id: str):
     try:
         result = await Database.read_from_db(query, (report_id,))
 
+        if not result:
+            raise HTTPException(status_code=404, detail="Report not found")
 
-        print(result)
+        # Extract common report data
+        report_data = {
+            "location_of_offence": result[0][3],
+            "time_of_offence": result[0][4],
+            "date_of_offence": str(result[0][5]),
+            "fine_issued": result[0][6],
+            "info_details": result[0][7],
+            "offenders": []
+        }
+
+        # Loop through offenders
+        for row in result:
+            offender = {
+                "name": row[0],
+                "cnic": row[1],
+                "address": row[2],
+                "total_offences": row[8]
+            }
+            report_data["offenders"].append(offender)
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    return ReportService.format_report_details(result)
+    return report_data
