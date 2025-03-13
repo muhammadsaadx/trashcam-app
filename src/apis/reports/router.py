@@ -67,6 +67,8 @@ async def get_single_report(report_id: str):
             o.cnic,
             o.address,
             r.locationStr AS location_of_offence,
+            r.latitude,
+            r.longitude,
             TO_CHAR(r.timestamp, 'HH12:MI AM') AS time_of_offence,
             r.timestamp::DATE AS date_of_offence,
             r.fineIssued AS fine_issued,
@@ -94,10 +96,12 @@ async def get_single_report(report_id: str):
         # Extract common report data
         report_data = {
             "location_of_offence": result[0][3],
-            "time_of_offence": result[0][4],
-            "date_of_offence": str(result[0][5]),
-            "fine_issued": result[0][6],
-            "info_details": result[0][7],
+            "latitude": str(result[0][4]),
+            "longitude": str(result[0][5]),
+            "time_of_offence": result[0][6],
+            "date_of_offence": str(result[0][7]),
+            "fine_issued": result[0][8],
+            "info_details": result[0][9],
             "offenders": []
         }
 
@@ -107,11 +111,14 @@ async def get_single_report(report_id: str):
                 "name": row[0],
                 "cnic": row[1],
                 "address": row[2],
-                "total_offences": row[8]
+                "total_offences": row[10]
             }
             report_data["offenders"].append(offender)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
+
+    print(report_data)
     return report_data
