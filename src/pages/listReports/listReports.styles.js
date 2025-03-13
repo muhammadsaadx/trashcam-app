@@ -60,6 +60,7 @@ const useStyles = makeStyles(() => ({
       borderBottom: "1px solid #EEEEEE",
     },
   },
+  
 }));
 
 export default useStyles;

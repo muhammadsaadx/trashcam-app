@@ -57,4 +57,4 @@ const styles = {
   // Media query will need to be handled differently in JSS
 };
 
-export default styles;
+export default styles;  
