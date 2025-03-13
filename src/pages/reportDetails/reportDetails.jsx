@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
-import styles from './reportDetails.styles.js';
-import axios from 'axios';
-import config from '../../config/config';
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import styles from "./reportDetails.styles.js";
+import axios from "axios";
+import config from "../../config/config";
 import { useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import "leaflet/dist/leaflet.css";
+
+// Custom marker icon for Leaflet
+const customIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // Location pin icon
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
 
 const ReportDetails = () => {
   const [reportData, setReportData] = useState(null);
@@ -15,13 +25,17 @@ const ReportDetails = () => {
 
   const fetchReportData = async () => {
     try {
-      const response = await axios.get(`${config.API_BASE_URL}/reports/get_single_report`, { 
-        params: { report_id: reportid } 
+      const response = await axios.get(`${config.API_BASE_URL}/reports/get_single_report`, {
+        params: { report_id: reportid },
       });
       setReportData(response.data);
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
+  };
+
+  const handleOffenderClick = (offender) => {
+    console.log("Clicked on offender:", offender);
   };
 
   return (
@@ -33,23 +47,80 @@ const ReportDetails = () => {
 
       {reportData ? (
         <>
+          <div style={styles.row}>
+            <div style={styles.reportDetails}>
+              <p><strong>Location:</strong> {reportData.location_of_offence || "N/A"}</p>
+              <p><strong>Latitude:</strong> {reportData.latitude || "N/A"}</p>
+              <p><strong>Longitude:</strong> {reportData.longitude || "N/A"}</p>
+              <p><strong>Date:</strong> {reportData.date_of_offence || "N/A"}</p>
+              <p><strong>Time:</strong> {reportData.time_of_offence || "N/A"}</p>
+            </div>
+
+            <div style={styles.offendersSection}>
+              <h3>Offenders</h3>
+              {reportData.offenders && reportData.offenders.length > 0 ? (
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Name</th>
+                      <th style={styles.tableHeader}>CNIC</th>
+                      <th style={styles.tableHeader}>Address</th>
+                      <th style={styles.tableHeader}>Total Offences</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reportData.offenders.map((offender, index) => (
+                      <tr key={index} style={styles.tableRow}>
+                        <td style={styles.tableCell}>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleOffenderClick(offender);
+                            }}
+                            style={styles.clickableText}
+                          >
+                            {offender.name}
+                          </a>
+                        </td>
+                        <td style={styles.tableCell}>{offender.cnic}</td>
+                        <td style={styles.tableCell}>{offender.address}</td>
+                        <td style={styles.tableCell}>{offender.total_offences}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No offenders found.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Map Section */}
+          <div style={styles.mapSection}>
+            <MapContainer
+              center={[reportData.latitude || 33.6844, reportData.longitude || 73.0479]}
+              zoom={13}
+              style={{ height: "400px", width: "100%", borderRadius: "8px" }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {reportData.latitude && reportData.longitude && (
+                <Marker position={[reportData.latitude, reportData.longitude]} icon={customIcon}>
+                  <Popup>
+                    <strong>Incident Location</strong>
+                    <br />
+                    {reportData.location_of_offence || "Unknown Location"}
+                  </Popup>
+                </Marker>
+              )}
+            </MapContainer>
+          </div>
 
           <div style={styles.row}>
-            <div style={styles.content}>
-              <p><strong>Location:</strong> {reportData.location_of_offence || 'N/A'}</p>
-              <p><strong>Date:</strong> {reportData.date_of_offence || 'N/A'}</p>
-              <p><strong>Time:</strong> {reportData.time_of_offence || 'N/A'}</p>
+            <div style={styles.detailsSection}>
               <p><strong>Detail:</strong></p>
-              <p style={styles.detailsText}>{reportData.info_details || 'N/A'}</p>
+              <p style={styles.detailsText}>{reportData.info_details || "N/A"}</p>
             </div>
-            
-            <div style={styles.content}>
-              <p><strong>Location:</strong> {reportData.location_of_offence || 'N/A'}</p>
-              <p><strong>Date:</strong> {reportData.date_of_offence || 'N/A'}</p>
-              <p><strong>Time:</strong> {reportData.time_of_offence || 'N/A'}</p>
-              <p><strong>Detail:</strong></p>
-              <p style={styles.detailsText}>{reportData.info_details || 'N/A'}</p>
-              </div> 
           </div>
         </>
       ) : (
