@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from database import Database
+from utils.database import Database
 from .service import DashboardService
 from utils.helpers import Helpers
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from apis.auth.model import UserLogin
 from apis.auth.sessions import create_access_token
-from database import Database
+from utils.database import Database
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

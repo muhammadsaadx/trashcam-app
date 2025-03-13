@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from typing import List, Dict
-from database import Database
+from utils.database import Database
 from .service import ReportService
 from utils.helpers import Helpers
 
@@ -61,8 +61,8 @@ async def get_list_of_reports(request: Request):
 
 
 
-@router.get("/get_report")
-async def get_report(report_id: str):
+@router.get("/get_single_report")
+async def get_single_report(report_id: str):
     query = """
         SELECT 
             o.name AS offender_name,
@@ -89,6 +89,9 @@ async def get_report(report_id: str):
 
     try:
         result = await Database.read_from_db(query, (report_id,))
+
+
+        print(result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
