@@ -1,3 +1,4 @@
+
 INSERT INTO litter (trashtype, trashamount) 
 VALUES 
     ('Plastic', 5.2),
