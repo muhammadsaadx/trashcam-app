@@ -16,7 +16,17 @@ const StatusButton = ({ status }) => {
   const { border, background } = STATUS_STYLES[status] || STATUS_STYLES.default;
   return (
     <Button
-      style={{ backgroundColor: background, color: border, width: 100, borderRadius: 10, border: `2px solid ${border}`, padding: "8px 20px", fontWeight: 600, textTransform: "none" }}
+      style={{ 
+        backgroundColor: background, 
+        color: border, 
+        borderRadius: 20, 
+        border: `1px solid ${border}`, 
+        padding: "4px 16px", 
+        fontWeight: 500, 
+        textTransform: "none",
+        fontSize: "0.75rem",
+        minWidth: 80
+      }}
     >
       {status}
     </Button>
@@ -53,12 +63,6 @@ const Reports = () => {
     try {
       const params = { startRow: start, endRow: end };
       const { data } = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports`, { params });
-
-
-      // console.log(data);
-
-
-
       return data;
     } catch (err) {
       setError("Failed to fetch reports. Please try again later.");
@@ -97,13 +101,20 @@ const Reports = () => {
     setLoadingMore(false);
   };
 
+  const formatTime = (time) => {
+    return time;
+  };
+
+  const formatDate = (date) => {
+    return date;
+  };
+
   const renderTableContent = () => {
     if (isLoading) return <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>;
     if (error) return <TableRow><TableCell colSpan={5} align="center" style={{ color: "red" }}>{error}</TableCell></TableRow>;
     if (!reportData.length) return <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>;
 
-    return reportData.map(({ reportid, name, cnic, location, fine, status }, index) => (
-    
+    return reportData.map(({ reportid, name, date, time, location, fine, status }, index) => (
       <TableRow 
         key={`${reportid}-${index}`} 
         className={styles.tableRow} 
@@ -111,26 +122,67 @@ const Reports = () => {
         hover={true}
         ref={index === reportData.length - 1 ? lastReportElementRef : null}
       >
-        <TableCell>{name}</TableCell>
-        <TableCell>{cnic}</TableCell>
-        <TableCell>{location}</TableCell>
-        <TableCell>{fine}</TableCell>
-        <TableCell><StatusButton status={status} /></TableCell>
+        <TableCell className={styles.nameCell}>
+          <div className={styles.nameWrapper}>
+            <div className={styles.officerName}>{name}</div>
+            <div className={styles.timeInfo}>{formatDate(date)} · {formatTime(time)}</div>
+          </div>
+        </TableCell>
+        <TableCell className={styles.locationCell}>{location}</TableCell>
+        <TableCell className={styles.fineCell}>{fine}</TableCell>
+        <TableCell className={styles.reportCell}>
+          <Button
+            className={styles.reportButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/reportDetails/${reportid}`);
+            }}
+          >
+            {name}
+          </Button>
+        </TableCell>
+        <TableCell className={styles.statusCell}><StatusButton status={status} /></TableCell>
       </TableRow>
     ));
   };
 
   return (
     <div className={styles.report}>
-      <header className={styles.reportHeader}><h1>List of Fines</h1></header>
+      <header className={styles.reportHeader}><h2>List of Fines</h2></header>
+      <div className={styles.filtersContainer}>
+        <div className={styles.horizontalFilters}>
+          <input type="text" placeholder="Search..." className={styles.searchInput} />
+          
+          <div className={styles.filterButton}>
+            <span>Locations</span>
+            <span className={styles.filterSubtext}>Select your city</span>
+          </div>
+          
+          <div className={styles.filterButton}>
+            <span>Date</span>
+            <span className={styles.filterSubtext}>Select Date</span>
+          </div>
+          
+          <div className={styles.filterButton}>
+            <span>Time</span>
+            <span className={styles.filterSubtext}>Select Time</span>
+          </div>
+          
+          <Button className={styles.analysisButton}>
+            Analysis
+          </Button>
+        </div>
+      </div>
       <div className={styles.reportContent}>
         <TableContainer component={Paper} className={styles.tableContainer}>
           <Table>
             <TableHead>
               <TableRow>
-                {["Name", "CNIC", "Location", "Fine", "Status"].map((header) => (
-                  <TableCell key={header} className={styles.tableHeader}>{header}</TableCell>
-                ))}
+                <TableCell className={styles.tableHeader}>Name of Offender</TableCell>
+                <TableCell className={styles.tableHeader}>Location</TableCell>
+                <TableCell className={styles.tableHeader}>Fine</TableCell>
+                <TableCell className={styles.tableHeader}>Report</TableCell>
+                <TableCell className={styles.tableHeader}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

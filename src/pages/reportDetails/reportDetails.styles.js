@@ -1,60 +1,72 @@
-// reportDetails.styles.js
+
 const styles = {
-  report: {
-    position: "fixed",
-    height: "100vh",
-    width: "100vw",
-    top: 0,
-    left: 300,
-    backgroundColor: "#F4F7F8",
+  container: {
+    background: '#f8fafb',
+    minHeight: '100vh',
+    padding: '2rem calc(300px + 2rem)',
   },
-  reportHeader: {
-    fontSize: "1rem",
-    color: "#212529",
-    paddingLeft: "40px",
+  headerContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '2rem',
   },
-  reportContent: {
-    display: "flex",
-    flexWrap: "wrap",
-    marginLeft: "50px",
-    gap: "15px",
+  title: {
+    fontSize: '2rem',
+    fontWeight: '700',
+    color: '#2d3436',
+    letterSpacing: '-0.5px',
+    margin: 0,
   },
-  personalDetailsChartCard: {
-    background: "white",
-    borderRadius: "25px",
-    width: "40%",
-    padding: "20px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    color: "black",
-    display: "flex",
-    justifyContent: "space-between",
+  reportId: {
+    fontSize: '1rem',
+    color: '#636e72',
+    fontWeight: '500',
+    backgroundColor: '#f5fbf7',
+    padding: '0.5rem 1.2rem',
+    borderRadius: '8px',
   },
-  personalDetails: {
-    width: "60%",
-    marginRight: "10px",
-    fontSize: "1.1rem",
-    lineHeight: 1.6,
+  row: {
+    display: 'flex',
+    gap: '2rem',
+    alignItems: 'flex-start',
+    '@media (max-width: 768px)': {
+      flexDirection: 'column'
+    }
   },
-  idCardImage: {
-    width: "70%",
-    textAlign: "center",
-    marginLeft: 0,
+  content: {
+    flex: 1,
+    background: '#fff',
+    padding: '1.5rem',
+    borderRadius: '8px',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    minWidth: '300px',
   },
-  idCardImg: {
-    maxWidth: "100%",
-    height: "auto",
-    borderRadius: "10px",
+  detailsText: {
+    textAlign: 'justify',
+    marginTop: '0.5rem',
   },
-  loadingScreen: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    fontSize: "24px",
-    color: "#333",
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '300px',
   },
-  // Media query will need to be handled differently in JSS
+  spinner: {
+    color: '#2ecc71',
+    marginBottom: '1rem',
+  },
+  loadingText: {
+    color: '#636e72',
+    fontSize: '1.1rem',
+    marginTop: '1rem',
+  },
+  '@media (max-width: 768px)': {
+    container: {
+      padding: '1rem',
+    },
+  },
 };
 
-export default styles;  
+export default styles;
