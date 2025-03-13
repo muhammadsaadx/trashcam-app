@@ -53,6 +53,12 @@ const Reports = () => {
     try {
       const params = { startRow: start, endRow: end };
       const { data } = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports`, { params });
+
+
+      // console.log(data);
+
+
+
       return data;
     } catch (err) {
       setError("Failed to fetch reports. Please try again later.");
@@ -78,9 +84,7 @@ const Reports = () => {
     const newEndRow = endRow + 10;
     
     const newData = await fetchReports(newStartRow, newEndRow);
-    
-    console.log(newData);
-    
+        
     if (newData.length === 0) {
       setHasMore(false);
     } else {
@@ -99,11 +103,12 @@ const Reports = () => {
     if (!reportData.length) return <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>;
 
     return reportData.map(({ reportid, name, cnic, location, fine, status }, index) => (
+    
       <TableRow 
-        key={reportid} 
+        key={`${reportid}-${index}`} 
         className={styles.tableRow} 
         onClick={() => navigate(`/reportDetails/${reportid}`)} 
-        hover
+        hover={true}
         ref={index === reportData.length - 1 ? lastReportElementRef : null}
       >
         <TableCell>{name}</TableCell>
