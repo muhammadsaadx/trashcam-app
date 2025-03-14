@@ -12,33 +12,11 @@ const STATUS_STYLES = {
   default: { border: "#C8C8C8", background: "#FFFFFF" },
 };
 
-const StatusButton = ({ status }) => {
-  const { border, background } = STATUS_STYLES[status] || STATUS_STYLES.default;
-  return (
-    <Button
-      style={{ 
-        backgroundColor: background, 
-        color: border, 
-        borderRadius: 20, 
-        border: `1px solid ${border}`, 
-        padding: "4px 16px", 
-        fontWeight: 500, 
-        textTransform: "none",
-        fontSize: "0.75rem",
-        minWidth: 80
-      }}
-    >
-      {status}
-    </Button>
-  );
-};
-
 const Reports = () => {
   const [startRow, setStartRow] = useState(0);
   const [endRow, setEndRow] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-
   const styles = useStyles();
   const navigate = useNavigate();
   const [reportData, setReportData] = useState([]);
@@ -101,54 +79,13 @@ const Reports = () => {
     setLoadingMore(false);
   };
 
-  const formatTime = (time) => {
-    return time;
-  };
-
-  const formatDate = (date) => {
-    return date;
-  };
-
-  const renderTableContent = () => {
-    if (isLoading) return <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>;
-    if (error) return <TableRow><TableCell colSpan={5} align="center" style={{ color: "red" }}>{error}</TableCell></TableRow>;
-    if (!reportData.length) return <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>;
-
-    return reportData.map(({ reportid, name, date, time, location, fine, status }, index) => (
-      <TableRow 
-        key={`${reportid}-${index}`} 
-        className={styles.tableRow} 
-        onClick={() => navigate(`/reportDetails/${reportid}`)} 
-        hover={true}
-        ref={index === reportData.length - 1 ? lastReportElementRef : null}
-      >
-        <TableCell className={styles.nameCell}>
-          <div className={styles.nameWrapper}>
-            <div className={styles.officerName}>{name}</div>
-            <div className={styles.timeInfo}>{formatDate(date)} · {formatTime(time)}</div>
-          </div>
-        </TableCell>
-        <TableCell className={styles.locationCell}>{location}</TableCell>
-        <TableCell className={styles.fineCell}>{fine}</TableCell>
-        <TableCell className={styles.reportCell}>
-          <Button
-            className={styles.reportButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/reportDetails/${reportid}`);
-            }}
-          >
-            {name}
-          </Button>
-        </TableCell>
-        <TableCell className={styles.statusCell}><StatusButton status={status} /></TableCell>
-      </TableRow>
-    ));
-  };
+  const formatTime = (time) => time;
+  const formatDate = (date) => date;
 
   return (
     <div className={styles.report}>
-      <header className={styles.reportHeader}><h2>List of Fines</h2></header>
+      <h1>List of Fines</h1>
+
       <div className={styles.filtersContainer}>
         <div className={styles.horizontalFilters}>
           <input type="text" placeholder="Search..." className={styles.searchInput} />
@@ -172,7 +109,11 @@ const Reports = () => {
             Analysis
           </Button>
         </div>
+
+
       </div>
+
+
       <div className={styles.reportContent}>
         <TableContainer component={Paper} className={styles.tableContainer}>
           <Table>
@@ -186,7 +127,60 @@ const Reports = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {renderTableContent()}
+              {isLoading ? (
+                <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>
+              ) : error ? (
+                <TableRow><TableCell colSpan={5} align="center" style={{ color: "red" }}>{error}</TableCell></TableRow>
+              ) : !reportData.length ? (
+                <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>
+              ) : (
+                reportData.map(({ reportid, name, date, time, location, fine, status }, index) => (
+                  <TableRow 
+                    key={`${reportid}-${index}`} 
+                    className={styles.tableRow} 
+                    onClick={() => navigate(`/reportDetails/${reportid}`)} 
+                    hover={true}
+                    ref={index === reportData.length - 1 ? lastReportElementRef : null}
+                  >
+                    <TableCell className={styles.nameCell}>
+                      <div className={styles.nameWrapper}>
+                        <div className={styles.officerName}>{name}</div>
+                        <div className={styles.timeInfo}>{formatDate(date)} · {formatTime(time)}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className={styles.locationCell}>{location}</TableCell>
+                    <TableCell className={styles.fineCell}>{fine}</TableCell>
+                    <TableCell className={styles.reportCell}>
+                      <Button
+                        className={styles.reportButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/reportDetails/${reportid}`);
+                        }}
+                      >
+                        {name}
+                      </Button>
+                    </TableCell>
+                    <TableCell className={styles.statusCell}>
+                      <Button
+                        style={{ 
+                          backgroundColor: STATUS_STYLES[status]?.background || STATUS_STYLES.default.background, 
+                          color: STATUS_STYLES[status]?.border || STATUS_STYLES.default.border, 
+                          borderRadius: 20, 
+                          border: `1px solid ${STATUS_STYLES[status]?.border || STATUS_STYLES.default.border}`, 
+                          padding: "4px 16px", 
+                          fontWeight: 500, 
+                          textTransform: "none",
+                          fontSize: "0.75rem",
+                          minWidth: 80
+                        }}
+                      >
+                        {status}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
               {loadingMore && (
                 <TableRow>
                   <TableCell colSpan={5} align="center" padding="normal">
@@ -198,6 +192,10 @@ const Reports = () => {
           </Table>
         </TableContainer>
       </div>
+
+
+
+      
     </div>
   );
 };

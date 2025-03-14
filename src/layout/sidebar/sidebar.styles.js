@@ -10,6 +10,7 @@ const styles = {
     backgroundColor: "#ffffff",
     display: "flex",
     flexDirection: "column",
+    fontFamily: "Plus Jakarta Sans, sans-serif",
   },
   sidebarContent: {
     flexGrow: 1,

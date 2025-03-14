@@ -1,12 +1,11 @@
 const styles = {
   container: {
-    background: "#f8fafb",
-    minHeight: "100vh",
-    padding: "2rem",
-    display: "flex",
-    
-    flexDirection: "column",
-    alignItems: "center",
+    position: 'fixed',
+    height: '100vh',
+    width: '100vw',
+    top: '5%',
+    left: '18%',
+    fontFamily: "'Source Sans Pro', sans-serif",
   },
   headerContainer: {
     display: "flex",
@@ -37,17 +36,19 @@ const styles = {
     alignItems: "flex-start",
     flexWrap: "wrap",
     justifyContent: "center",
-    width: "100%",
     maxWidth: "1200px",
+    width: "100%",
   },
- 
   reportDetails: {
     flex: 1,
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "100%",
+    minWidth: "60%",
+  },
+  col: {
+    flex: 1,
   },
   offendersSection: {
     flex: 1,
@@ -55,20 +56,13 @@ const styles = {
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "100%",
+    minWidth: "150%",
   },
-  
   detailsText: {
     textAlign: "justify",
     marginTop: "0.5rem",
   },
-  loadingContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "300px",
-  },
+  
   spinner: {
     color: "#2ecc71",
     marginBottom: "1rem",
@@ -102,30 +96,14 @@ const styles = {
     textDecoration: "underline",
     cursor: "pointer",
   },
-
-  /** Map Styling **/
   mapSection: {
-    flex: 1,
-    background: "#fff",
-    borderRadius: "15px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
     marginTop: "2rem",
-    maxWidth: "1200px",
-    width: "100%",
-  },
-  mapTitle: {
-    fontSize: "1.5rem",
-    fontWeight: "600",
-    marginBottom: "1rem",
-    color: "#2d3436",
-  },
-  mapWrapper: {
-    height: "400px",
-    width: "100%",
-    borderRadius: "10px",
-    overflow: "hidden",
-    border: "2px solid #ddd",
-  },
+    width: '162%',
+    height: '300px',
+    borderRadius: '25px',
+    overflow: 'hidden',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  }
 };
 
 export default styles;

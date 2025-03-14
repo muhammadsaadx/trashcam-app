@@ -4,6 +4,7 @@ import MainSidebar from "./sidebar/sidebar";
 import Dashboard from "../pages/dashboard/dashboard";
 import Reports from "../pages/listReports/listReports";
 import ReportDetails from "../pages/reportDetails/reportDetails";
+import OffenderProfile from "../pages/offenderProfile/offenderProfile";
 
 const AppLayout = () => {
   const location = useLocation();
@@ -14,11 +15,16 @@ const AppLayout = () => {
       {!hideSidebar && <div className="sidebar"><MainSidebar /></div>}
       <div className="main-content">
         <Routes>
+          {/* all unassigned ones */}
+          <Route path="*" element={<Navigate to="/dashboard" />} />   
+
+
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/reportDetails/:reportid" element={<ReportDetails />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/offenderProfile/:offenderid" element={<OffenderProfile/>} />
+        
         </Routes>
       </div>
     </div>

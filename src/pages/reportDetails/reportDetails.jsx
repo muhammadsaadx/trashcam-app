@@ -4,7 +4,7 @@ import L from "leaflet";
 import styles from "./reportDetails.styles.js";
 import axios from "axios";
 import config from "../../config/config";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 
@@ -18,6 +18,7 @@ const customIcon = new L.Icon({
 const ReportDetails = () => {
   const [reportData, setReportData] = useState(null);
   const { reportid } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchReportData();
@@ -35,7 +36,8 @@ const ReportDetails = () => {
   };
 
   const handleOffenderClick = (offender) => {
-    console.log("Clicked on offender:", offender);
+
+    navigate(`/offenderProfile/${offender.offender_id}`);
   };
 
   return (
