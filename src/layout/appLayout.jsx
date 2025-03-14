@@ -12,7 +12,6 @@ const AppLayout = () => {
 
   return (
     <div className="app-container">
-      {!hideSidebar && <div className="sidebar"><MainSidebar /></div>}
       <div className="main-content">
         <Routes>
           {/* all unassigned ones */}

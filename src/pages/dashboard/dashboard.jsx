@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import "leaflet/dist/leaflet.css";
 import styles from "./dashboard.styles";
 import config from "../../config/config";
+import Sidebar from "../../layout/sidebar/sidebar";
 
 const MapLayout = ({ data }) => {
   const map = useMap();
@@ -48,7 +49,10 @@ const Dashboard = () => {
 
 
   return (
+
+    
     <div style={styles.dashboard}>
+      <Sidebar />
       <header style={styles.dashboardHeader}>
         <h3>Dashboard</h3>
       </header>

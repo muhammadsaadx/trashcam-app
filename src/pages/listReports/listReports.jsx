@@ -4,6 +4,8 @@ import axios from "axios";
 import config from "../../config/config";
 import useStyles from "./listReports.styles";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../layout/sidebar/sidebar";
+
 
 const STATUS_STYLES = {
   Paid: { border: "#98C0A1", background: "#C0F2C9" },
@@ -84,6 +86,8 @@ const Reports = () => {
 
   return (
     <div className={styles.report}>
+      <Sidebar />
+
       <h1>List of Fines</h1>
 
       <div className={styles.filtersContainer}>

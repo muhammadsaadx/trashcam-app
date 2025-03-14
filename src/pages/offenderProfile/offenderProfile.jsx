@@ -1,76 +1,68 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
-import styles from "./offenderProfile.styles"; // Ensure this is a valid styles object
 import axios from "axios";
 import config from "../../config/config";
-
+import { useParams } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import styles from "./offenderProfile.styles.js";
+import Sidebar from "../../layout/sidebar/Sidebar.jsx";
 
 const OffenderProfile = () => {
-  const [offenderData, setOffenderData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { offenderid } = useParams();
+  const [reportData, setReportData] = useState(null);
+  const { reportid } = useParams();
 
   useEffect(() => {
-        fetchOffenderData();
-      }, [offenderid]); // Run the effect only when `offenderid` changes
-      
+    fetchReportData();
+  }, [reportid]);
 
-
-
-  
-  const fetchOffenderData = async () => {
-        try {
-            const response = await axios.get(`${config.API_BASE_URL}/offenders/get_offender_profile`, {
-                params: { offender_id: offenderid },
-            });
-            setOffenderData(response.data.offender);
-        } catch (error) {
-            console.error("Error fetching offender data:", error);
-        }
-    };
-    
-        
+  const fetchReportData = async () => {
+    try {
+      const response = await axios.get(`${config.API_BASE_URL}/reports/get_single_report`, {
+        params: { report_id: reportid },
+      });
+      setReportData(response.data);
+    } catch (error) {
+      console.error("Error fetching report data:", error);
+    }
+  };
 
   return (
     <div style={styles.container}>
-      <div style={styles.headerContainer}>
-        <h1 style={styles.title}>Offender Profile</h1>
-        <div style={styles.offenderid}>Offender ID: {offenderid || "N/A"}</div>
+      <Sidebar />
+      <div style={styles.mainContent}>
+        <div style={styles.headerContainer}>
+          <h1 style={styles.title}>Case Report Details</h1>
+          <div style={styles.reportId}>Report ID: {reportid}</div>
+        </div>
+
+        {reportData ? (
+          <div style={styles.reportDetails}>
+            <p><strong>Location:</strong> {reportData.location_of_offence || "N/A"}</p>
+            <p><strong>Date:</strong> {reportData.date_of_offence || "N/A"}</p>
+            <p><strong>Time:</strong> {reportData.time_of_offence || "N/A"}</p>
+            <p><strong>Detail:</strong></p>
+            <p style={styles.detailsText}>{reportData.info_details || "N/A"}</p>
+          </div>
+        ) : (
+
+
+                      <div style={styles.reportDetails}>
+                        <p><strong>Location:</strong> </p>
+                        <p><strong>Date:</strong> </p>
+                        <p><strong>Time:</strong> </p>
+                        <p><strong>Detail:</strong></p>
+                        <p style={styles.detailsText}></p>
+                      </div>
+
+
+
+
+
+          // <div style={styles.loadingContainer}>
+          //   <CircularProgress size={60} style={styles.spinner} />
+          //   <p style={styles.loadingText}>Loading report details...</p>
+          // </div>
+        )}
       </div>
-
-      {offenderData ? (
-
-
-        <div style={styles.row}>
-          Offender Profile
-        </div>
-
-
-      ) : (
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <div style={styles.loadingContainer}>
-          <CircularProgress size={60} style={styles.spinner} />
-          <p style={styles.loadingText}>Loading offender profile...</p>
-        </div>
-      )}
     </div>
   );
 };

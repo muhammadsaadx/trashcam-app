@@ -1,27 +1,35 @@
 const styles = {
   container: {
     position: 'fixed',
-    height: '100vh',
-    width: '100vw',
-    top: '5%',
-    left: '18%',
+    display: 'flex', // Flex layout
+    minHeight: '100vh',
+    width: '100%',
     fontFamily: "'Source Sans Pro', sans-serif",
+    overflow: 'hidden', // Prevent horizontal and vertical scrolling
+  },
+  mainContent: {
+    flex: '1',
+    marginLeft: '250px', // Match your sidebar width
+    padding: '2rem',
+    maxWidth: '100%', // Ensure content respects sidebar space
+    overflow: 'hidden', // Prevent content overflow
+    transition: 'margin-left 0.3s ease', // Smooth transition for responsive design
   },
   headerContainer: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "2rem",
-    width: "100%",
-    maxWidth: "1400px",
+    width: "90%",
   },
   title: {
     fontSize: "2rem",
     fontWeight: "700",
     color: "#2d3436",
     letterSpacing: "-0.5px",
-    margin: 0,
+    margin: "0 0 0 4rem", // Added left margin to shift it right
   },
+  
   reportId: {
     fontSize: "1rem",
     color: "#636e72",
@@ -29,51 +37,53 @@ const styles = {
     backgroundColor: "#f5fbf7",
     padding: "0.5rem 1.2rem",
     borderRadius: "15px",
+    minWidth: "120px",
+    textAlign: "center",
   },
   row: {
-    display: "flex",
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
     gap: "2rem",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    maxWidth: "1200px",
     width: "100%",
+    maxWidth: "1400px",
+    margin: "0 auto",
   },
   reportDetails: {
-    flex: 1,
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    minWidth: "60%",
   },
   col: {
-    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: "2rem",
   },
   offendersSection: {
-    flex: 1,
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    minWidth: "150%",
+    width: "100%",
   },
-  fineStatusSection:{
-    marginTop: "2rem",
-    flex: 1,
+  fineStatusSection: {
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    minWidth: "150%",
-
+    width: "100%",
   },
-
   detailsText: {
     textAlign: "justify",
     marginTop: "0.5rem",
   },
-  
+  loadingContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "60vh",
+  },
   spinner: {
     color: "#2ecc71",
     marginBottom: "1rem",
@@ -103,17 +113,44 @@ const styles = {
     padding: "8px",
   },
   clickableText: {
-    color: "black",
+    color: "#2980b9",
     textDecoration: "underline",
     cursor: "pointer",
   },
   mapSection: {
-    marginTop: "2rem",
-    width: '162%',
-    height: '300px',
-    borderRadius: '25px',
-    overflow: 'hidden',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    width: "108%",
+    height: "300px",
+    borderRadius: "15px",
+    overflow: "hidden",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  },
+  // Add responsive styles for smaller screens
+  "@media (max-width: 992px)": {
+    row: {
+      gridTemplateColumns: "1fr",
+    },
+    mainContent: {
+      marginLeft: '200px', // Slightly smaller sidebar on medium screens
+      maxWidth: 'calc(100% - 200px)',
+    }
+  },
+  "@media (max-width: 768px)": {
+    mainContent: {
+      marginLeft: '0', // For mobile view where sidebar might collapse/hide
+      maxWidth: '100%',
+      padding: '1rem',
+    },
+    headerContainer: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      gap: "1rem",
+    },
+    reportId: {
+      alignSelf: "flex-start",
+    },
+    row: {
+      gridTemplateColumns: "1fr",
+    },
   }
 };
 
