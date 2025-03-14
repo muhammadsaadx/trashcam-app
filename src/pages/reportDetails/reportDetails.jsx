@@ -48,80 +48,80 @@ const ReportDetails = () => {
       {reportData ? (
         <>
           <div style={styles.row}>
-            <div style={styles.reportDetails}>
-              <p><strong>Location:</strong> {reportData.location_of_offence || "N/A"}</p>
-              <p><strong>Latitude:</strong> {reportData.latitude || "N/A"}</p>
-              <p><strong>Longitude:</strong> {reportData.longitude || "N/A"}</p>
-              <p><strong>Date:</strong> {reportData.date_of_offence || "N/A"}</p>
-              <p><strong>Time:</strong> {reportData.time_of_offence || "N/A"}</p>
-            </div>
 
-            <div style={styles.offendersSection}>
-              <h3>Offenders</h3>
-              {reportData.offenders && reportData.offenders.length > 0 ? (
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.tableHeader}>Name</th>
-                      <th style={styles.tableHeader}>CNIC</th>
-                      <th style={styles.tableHeader}>Address</th>
-                      <th style={styles.tableHeader}>Total Offences</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reportData.offenders.map((offender, index) => (
-                      <tr key={index} style={styles.tableRow}>
-                        <td style={styles.tableCell}>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleOffenderClick(offender);
-                            }}
-                            style={styles.clickableText}
-                          >
-                            {offender.name}
-                          </a>
-                        </td>
-                        <td style={styles.tableCell}>{offender.cnic}</td>
-                        <td style={styles.tableCell}>{offender.address}</td>
-                        <td style={styles.tableCell}>{offender.total_offences}</td>
+              <div style={styles.reportDetails}>
+                <p><strong>Location:</strong> {reportData.location_of_offence || "N/A"}</p>
+                <p><strong>Date:</strong> {reportData.date_of_offence || "N/A"}</p>
+                <p><strong>Time:</strong> {reportData.time_of_offence || "N/A"}</p>
+                <p><strong>Detail:</strong></p>
+                <p style={styles.detailsText}>{reportData.info_details || "N/A"}</p>
+              </div>
+
+          
+            <div style={styles.col}>
+              
+              <div style={styles.offendersSection}>
+                <h3>Offenders</h3>
+                {reportData.offenders && reportData.offenders.length > 0 ? (
+                  <table style={styles.table}>
+                    <thead>
+                      <tr>
+                        <th style={styles.tableHeader}>Name</th>
+                        <th style={styles.tableHeader}>CNIC</th>
+                        <th style={styles.tableHeader}>Address</th>
+                        <th style={styles.tableHeader}>Total Offences</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No offenders found.</p>
-              )}
+                    </thead>
+                    <tbody>
+                      {reportData.offenders.map((offender, index) => (
+                        <tr key={index} style={styles.tableRow}>
+                          <td style={styles.tableCell}>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleOffenderClick(offender);
+                              }}
+                              style={styles.clickableText}
+                            >
+                              {offender.name}
+                            </a>
+                          </td>
+                          <td style={styles.tableCell}>{offender.cnic}</td>
+                          <td style={styles.tableCell}>{offender.address}</td>
+                          <td style={styles.tableCell}>{offender.total_offences}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No offenders found.</p>
+                )}
+              </div>
+
+              {/* Map Section */}
+              <div style={styles.mapSection}>
+                <MapContainer
+                  center={[reportData.latitude || 33.6844, reportData.longitude || 73.0479]}
+                  zoom={13}
+                  style={{ height: "400px", width: "100%", borderRadius: "8px" }}
+                >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  {reportData.latitude && reportData.longitude && (
+                    <Marker position={[reportData.latitude, reportData.longitude]} icon={customIcon}>
+                      <Popup>
+                        <strong>Incident Location</strong>
+                        <br />
+                        {reportData.location_of_offence || "Unknown Location"}
+                      </Popup>
+                    </Marker>
+                  )}
+                </MapContainer>
+              </div>
             </div>
+
           </div>
 
-          {/* Map Section */}
-          <div style={styles.mapSection}>
-            <MapContainer
-              center={[reportData.latitude || 33.6844, reportData.longitude || 73.0479]}
-              zoom={13}
-              style={{ height: "400px", width: "100%", borderRadius: "8px" }}
-            >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {reportData.latitude && reportData.longitude && (
-                <Marker position={[reportData.latitude, reportData.longitude]} icon={customIcon}>
-                  <Popup>
-                    <strong>Incident Location</strong>
-                    <br />
-                    {reportData.location_of_offence || "Unknown Location"}
-                  </Popup>
-                </Marker>
-              )}
-            </MapContainer>
-          </div>
-
-          <div style={styles.row}>
-            <div style={styles.detailsSection}>
-              <p><strong>Detail:</strong></p>
-              <p style={styles.detailsText}>{reportData.info_details || "N/A"}</p>
-            </div>
-          </div>
         </>
       ) : (
         <div style={styles.loadingContainer}>

@@ -2,13 +2,19 @@ const styles = {
   container: {
     background: "#f8fafb",
     minHeight: "100vh",
-    padding: "2rem calc(300px + 2rem)",
+    padding: "2rem",
+    display: "flex",
+    
+    flexDirection: "column",
+    alignItems: "center",
   },
   headerContainer: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "2rem",
+    width: "100%",
+    maxWidth: "1200px",
   },
   title: {
     fontSize: "2rem",
@@ -30,14 +36,18 @@ const styles = {
     gap: "2rem",
     alignItems: "flex-start",
     flexWrap: "wrap",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: "1200px",
   },
+ 
   reportDetails: {
     flex: 1,
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "500px",
+    maxWidth: "100%",
   },
   offendersSection: {
     flex: 1,
@@ -45,16 +55,9 @@ const styles = {
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "500px",
+    maxWidth: "100%",
   },
-  detailsSection: {
-    flex: 1,
-    background: "#fff",
-    padding: "1.5rem",
-    borderRadius: "15px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "500px",
-  },
+  
   detailsText: {
     textAlign: "justify",
     marginTop: "0.5rem",
@@ -107,7 +110,8 @@ const styles = {
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
     marginTop: "2rem",
-    maxWidth: "50%",
+    maxWidth: "1200px",
+    width: "100%",
   },
   mapTitle: {
     fontSize: "1.5rem",
