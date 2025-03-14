@@ -58,11 +58,11 @@ async def get_list_of_reports(request: Request):
 
 
 
-
 @router.get("/get_single_report")
 async def get_single_report(report_id: str):
     query = """
         SELECT 
+            o.offenderid,
             o.name AS offender_name,
             o.cnic,
             o.address,
@@ -72,6 +72,7 @@ async def get_single_report(report_id: str):
             TO_CHAR(r.timestamp, 'HH12:MI AM') AS time_of_offence,
             r.timestamp::DATE AS date_of_offence,
             r.fineIssued AS fine_issued,
+            r.fineStatus AS fine_status,
             r.infodetails AS info_details, 
             (SELECT COUNT(DISTINCT r2.reportid)
             FROM reports r2
@@ -95,30 +96,28 @@ async def get_single_report(report_id: str):
 
         # Extract common report data
         report_data = {
-            "location_of_offence": result[0][3],
-            "latitude": str(result[0][4]),
-            "longitude": str(result[0][5]),
-            "time_of_offence": result[0][6],
-            "date_of_offence": str(result[0][7]),
-            "fine_issued": result[0][8],
-            "info_details": result[0][9],
+            "location_of_offence": result[0][4],
+            "latitude": str(result[0][5]),
+            "longitude": str(result[0][6]),
+            "time_of_offence": result[0][7],
+            "date_of_offence": str(result[0][8]),
+            "fine_issued": result[0][9],
+            "fine_status": result[0][10],
+            "info_details": result[0][11],
             "offenders": []
         }
 
-        # Loop through offenders
         for row in result:
             offender = {
-                "name": row[0],
-                "cnic": row[1],
-                "address": row[2],
-                "total_offences": row[10]
+                "offender_id": row[0],
+                "name": row[1],
+                "cnic": row[2],
+                "address": row[3],
+                "total_offences": row[12]
             }
             report_data["offenders"].append(offender)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-
-
-    print(report_data)
     return report_data
