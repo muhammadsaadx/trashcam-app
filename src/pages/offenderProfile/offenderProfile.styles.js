@@ -1,18 +1,19 @@
+
 const styles = {
   container: {
     position: 'fixed',
-    display: 'flex',
+    display: 'flex', // Flex layout
     minHeight: '100vh',
     width: '100%',
     fontFamily: "'Source Sans Pro', sans-serif",
-    overflow: 'hidden',
+    overflow: 'hidden', 
   },
   mainContent: {
     flex: '1',
-    marginLeft: '250px',
+    marginLeft: '250px', // Match your sidebar width
     padding: '2rem',
-    maxWidth: '100%',
-    overflow: 'hidden',
+    maxWidth: '100%', // Ensure content respects sidebar space
+    overflow: 'hidden', // Prevent content overflow
     transition: 'margin-left 0.3s ease',
   },
   headerContainer: {
@@ -27,9 +28,10 @@ const styles = {
     fontWeight: "700",
     color: "#2d3436",
     letterSpacing: "-0.5px",
-    margin: "0 0 0 4rem",
+    margin: "0 0 0 4rem", // Added left margin to shift it right
   },
-  reportId: {
+  
+  offenderid: {
     fontSize: "1rem",
     color: "#636e72",
     fontWeight: "500",
@@ -39,15 +41,39 @@ const styles = {
     minWidth: "120px",
     textAlign: "center",
   },
-  reportDetails: {
+  row: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "2rem",
+    width: "100%",
+    maxWidth: "1400px",
+    margin: "0 auto",
+  },
+  offencesSection: {
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    width: "100%",
   },
-  detailsText: {
-    textAlign: "justify",
-    marginTop: "0.5rem",
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "1rem",
+  },
+  tableHeader: {
+    border: "1px solid #ddd",
+    padding: "8px",
+    backgroundColor: "#DFFFE0",
+    textAlign: "left",
+    fontWeight: "bold",
+  },
+  tableRow: {
+    borderBottom: "1px solid #ddd",
+  },
+  tableCell: {
+    border: "1px solid #ddd",
+    padding: "8px",
   },
   loadingContainer: {
     display: "flex",
@@ -63,22 +89,6 @@ const styles = {
   loadingText: {
     color: "#636e72",
     fontSize: "1.1rem",
-    marginTop: "1rem",
-  },
-  "@media (max-width: 768px)": {
-    mainContent: {
-      marginLeft: '0',
-      maxWidth: '100%',
-      padding: '1rem',
-    },
-    headerContainer: {
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: "1rem",
-    },
-    reportId: {
-      alignSelf: "flex-start",
-    },
   },
 };
 

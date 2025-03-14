@@ -60,6 +60,7 @@ const ReportDetails = () => {
         {reportData ? (
           <>
             <div style={styles.row}>
+              
               <div style={styles.reportDetails}>
                 <p><strong>Location:</strong> {reportData.location_of_offence || "N/A"}</p>
                 <p><strong>Date:</strong> {reportData.date_of_offence || "N/A"}</p>

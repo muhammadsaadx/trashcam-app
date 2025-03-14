@@ -40,6 +40,13 @@ const styles = {
     minWidth: "120px",
     textAlign: "center",
   },
+  
+  reportDetails: {
+    background: "#fff",
+    padding: "1.5rem",
+    borderRadius: "15px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  },
   row: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
@@ -47,12 +54,6 @@ const styles = {
     width: "100%",
     maxWidth: "1400px",
     margin: "0 auto",
-  },
-  reportDetails: {
-    background: "#fff",
-    padding: "1.5rem",
-    borderRadius: "15px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
   },
   col: {
     display: "flex",
@@ -124,34 +125,8 @@ const styles = {
     overflow: "hidden",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   },
-  // Add responsive styles for smaller screens
-  "@media (max-width: 992px)": {
-    row: {
-      gridTemplateColumns: "1fr",
-    },
-    mainContent: {
-      marginLeft: '200px', // Slightly smaller sidebar on medium screens
-      maxWidth: 'calc(100% - 200px)',
-    }
-  },
-  "@media (max-width: 768px)": {
-    mainContent: {
-      marginLeft: '0', // For mobile view where sidebar might collapse/hide
-      maxWidth: '100%',
-      padding: '1rem',
-    },
-    headerContainer: {
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: "1rem",
-    },
-    reportId: {
-      alignSelf: "flex-start",
-    },
-    row: {
-      gridTemplateColumns: "1fr",
-    },
-  }
+  
+  
 };
 
 export default styles;
