@@ -13,7 +13,7 @@ const styles = {
     alignItems: "center",
     marginBottom: "2rem",
     width: "100%",
-    maxWidth: "1200px",
+    maxWidth: "1400px",
   },
   title: {
     fontSize: "2rem",
@@ -58,6 +58,17 @@ const styles = {
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
     minWidth: "150%",
   },
+  fineStatusSection:{
+    marginTop: "2rem",
+    flex: 1,
+    background: "#fff",
+    padding: "1.5rem",
+    borderRadius: "15px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    minWidth: "150%",
+
+  },
+
   detailsText: {
     textAlign: "justify",
     marginTop: "0.5rem",
