@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+import base64
+from fastapi import APIRouter, HTTPException
 from utils.database import Database
 import httpx
-import base64
+import os
+from dotenv import load_dotenv
 
-from utils.s3_storage import get_idcard
+load_dotenv()
 
 router = APIRouter(prefix="/offenders", tags=["offenders"])
 
@@ -48,8 +50,6 @@ async def get_offender_profile(offender_id: str):
 
 
 
-
-
 @router.get("/get_offender_personal_details")
 async def get_offender_personal_details(offender_id: str):
     query = "SELECT * FROM offenders WHERE offenderid = %s LIMIT 1;"
@@ -68,6 +68,7 @@ async def get_offender_personal_details(offender_id: str):
             "address": address,
         }
 
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
@@ -75,30 +76,23 @@ async def get_offender_personal_details(offender_id: str):
 
 
 
-    
-
 @router.get("/get_offender_idcard")
 async def get_offender_idcard(cnic: str):
     
-    
-    # Create the direct S3 URL for the image
-    url = f"https://s3trashcambucket.s3.eu-north-1.amazonaws.com/idcards/{cnic}.jpg"
+    AWS_URL = os.getenv("AWS_URL")
+
+    get_idcards_url = f"{AWS_URL}id_cards/{cnic}.jpg"
     
     try:
-        # Fetch the image using httpx
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
+            response = await client.get(get_idcards_url)
             
-            # Check if request was successful
             if response.status_code == 200:
-                # Return base64 encoded image data that can be displayed in browser
                 image_data = response.content
                 encoded_image = base64.b64encode(image_data).decode('utf-8')
                 return {"image": f"data:image/jpeg;base64,{encoded_image}"}
             else:
-                # If image not found or other error
                 return {"error": f"ID card not found. Status code: {response.status_code}"}
     
     except Exception as e:
-        # Handle any exceptions during the request
         return {"error": f"Error fetching ID card: {str(e)}"}
