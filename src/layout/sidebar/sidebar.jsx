@@ -40,6 +40,12 @@ const MainSidebar = () => {
           <MenuItem icon={<TbReport />} onClick={() => navigate("/reports")} suffix={<span style={styles.menuBadge}>2</span>}>
             Fines
           </MenuItem>
+
+          <MenuItem onClick={() => navigate("/detect")}>
+            Detect
+          </MenuItem>
+
+
           <MenuItem icon={<FaList />} onClick={() => navigate("/cities")}>
             Cities
           </MenuItem>

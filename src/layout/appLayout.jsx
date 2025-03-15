@@ -5,6 +5,8 @@ import Dashboard from "../pages/dashboard/dashboard";
 import Reports from "../pages/listReports/listReports";
 import ReportDetails from "../pages/reportDetails/reportDetails";
 import OffenderProfile from "../pages/offenderProfile/offenderProfile";
+import Detect from "../pages/detect/detect";
+
 
 const AppLayout = () => {
   const location = useLocation();
@@ -23,6 +25,7 @@ const AppLayout = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/reportDetails/:reportid" element={<ReportDetails />} />
           <Route path="/offenderProfile/:offenderid" element={<OffenderProfile/>} />
+          <Route path="/detect" element={<Detect/>} />
         
         </Routes>
       </div>
