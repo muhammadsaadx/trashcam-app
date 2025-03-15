@@ -91,44 +91,30 @@ const Reports = () => {
       <h1>List of Fines</h1>
 
       <div className={styles.filtersContainer}>
-        <div className={styles.horizontalFilters}>
-          <input type="text" placeholder="Search..." className={styles.searchInput} />
-          
-          <div className={styles.filterButton}>
-            <span>Locations</span>
-            <span className={styles.filterSubtext}>Select your city</span>
+      <div className={styles.horizontalFilters}>
+        <input type="text" placeholder="Search..." className={styles.searchInput} />
+        
+        {["Locations", "Date", "Time"].map((label) => (
+          <div key={label} className={styles.filterButton}>
+            <span>{label}</span>
+            <span className={styles.filterSubtext}>Select {label}</span>
           </div>
-          
-          <div className={styles.filterButton}>
-            <span>Date</span>
-            <span className={styles.filterSubtext}>Select Date</span>
-          </div>
-          
-          <div className={styles.filterButton}>
-            <span>Time</span>
-            <span className={styles.filterSubtext}>Select Time</span>
-          </div>
-          
-          <Button className={styles.analysisButton}>
-            Analysis
-          </Button>
-        </div>
-
-
+        ))}
+        
+        <Button className={styles.analysisButton}>Analysis</Button>
       </div>
-
+    </div>
 
       <div className={styles.reportContent}>
         <TableContainer component={Paper} className={styles.tableContainer}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell className={styles.tableHeader}>Name of Offender</TableCell>
-                <TableCell className={styles.tableHeader}>Location</TableCell>
-                <TableCell className={styles.tableHeader}>Fine</TableCell>
-                <TableCell className={styles.tableHeader}>Report</TableCell>
-                <TableCell className={styles.tableHeader}>Status</TableCell>
-              </TableRow>
+            <TableRow>
+              {["Name of Offender", "Location", "Fine", "Report", "Status"].map((col) => (
+                <TableCell key={col} className={styles.tableHeader}>{col}</TableCell>
+              ))}
+            </TableRow>
+
             </TableHead>
             <TableBody>
               {isLoading ? (
@@ -197,9 +183,6 @@ const Reports = () => {
         </TableContainer>
       </div>
 
-
-
-      
     </div>
   );
 };

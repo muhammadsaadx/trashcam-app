@@ -1,20 +1,38 @@
+const STATUS_STYLES = {
+  Paid: { border: "#98C0A1", background: "#C0F2C9" },
+  Pending: { border: "#A4A7C3", background: "#CCCFEB" },
+  Missed: { border: "#D2A0A1", background: "#FAC8C9" },
+  default: { border: "#C8C8C8", background: "#FFFFFF" },
+};
+
+const getFineStatusStyle = (status) => ({
+  backgroundColor: STATUS_STYLES[status]?.background || STATUS_STYLES.default.background,
+  color: "black",
+  borderRadius: 7,
+  border: `1px solid ${STATUS_STYLES[status]?.border || STATUS_STYLES.default.border}`,
+  padding: "4px 16px",
+  fontWeight: 500,
+  textTransform: "none",
+  fontSize: "0.75rem",
+  minWidth: 80
+});
 
 const styles = {
   container: {
-    position: 'fixed',
-    display: 'flex', // Flex layout
-    minHeight: '100vh',
-    width: '100%',
+    position: "fixed",
+    display: "flex",
+    minHeight: "100vh",
+    width: "100%",
     fontFamily: "'Source Sans Pro', sans-serif",
-    overflow: 'hidden', 
+    overflow: "hidden",
   },
   mainContent: {
-    flex: '1',
-    marginLeft: '250px', // Match your sidebar width
-    padding: '2rem',
-    maxWidth: '100%', // Ensure content respects sidebar space
-    overflow: 'hidden', // Prevent content overflow
-    transition: 'margin-left 0.3s ease',
+    flex: "1",
+    marginLeft: "350px",
+    padding: "2rem",
+    maxWidth: "100%",
+    overflow: "hidden",
+    transition: "margin-left 0.3s ease",
   },
   headerContainer: {
     display: "flex",
@@ -28,9 +46,8 @@ const styles = {
     fontWeight: "700",
     color: "#2d3436",
     letterSpacing: "-0.5px",
-    margin: "0 0 0 4rem", // Added left margin to shift it right
+    margin: "0 0 0 -1rem",
   },
-  
   offenderid: {
     fontSize: "1rem",
     color: "#636e72",
@@ -44,17 +61,30 @@ const styles = {
   row: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
-    gap: "2rem",
     width: "100%",
-    maxWidth: "1400px",
-    margin: "0 auto",
   },
+
+  col: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2rem",
+  },
+
+
+
   offencesSection: {
     background: "#fff",
     padding: "1.5rem",
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    width: "100%",
+    width: "90%",
+  },
+  personalSection: {
+    background: "#fff",
+    padding: "1.5rem",
+    borderRadius: "15px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    width: "80%",
   },
   table: {
     width: "100%",
@@ -92,4 +122,4 @@ const styles = {
   },
 };
 
-export default styles;
+export { styles, getFineStatusStyle };

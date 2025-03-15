@@ -2,33 +2,74 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../../config/config";
 import { useParams } from "react-router-dom";
-import { 
-  CircularProgress, Table, TableBody, TableCell, 
-  TableContainer, TableHead, TableRow, Paper, Button 
+import {
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button
 } from "@mui/material";
-import styles from "./offenderProfile.styles.js";
-import Sidebar from "../../layout/sidebar/Sidebar.jsx";
-
-const STATUS_STYLES = {
-  Paid: { border: "#98C0A1", background: "#C0F2C9" },
-  Pending: { border: "#A4A7C3", background: "#CCCFEB" },
-  Missed: { border: "#D2A0A1", background: "#FAC8C9" },
-  default: { border: "#C8C8C8", background: "#FFFFFF" },
-};
+import { styles, getFineStatusStyle } from "./offenderProfile.styles.js";
+import Sidebar from "../../layout/sidebar/sidebar.jsx";
 
 const OffenderProfile = () => {
   const [reportData, setReportData] = useState([]);
+  const [offenderPersonalDetails, setOffenderPersonalDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [idCardImage, setIdCardImage] = useState(null);
+  const [idCardLoading, setIdCardLoading] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(true);
+  const [offencesLoading, setOffencesLoading] = useState(true);
   const { offenderid } = useParams();
 
   useEffect(() => {
-    fetchReportData();
+    fetchOffenderPersonalDetails();
+    fetchPastOffences();
   }, [offenderid]);
 
-  const fetchReportData = async () => {
-    setLoading(true);
+  useEffect(() => {
+    if (offenderPersonalDetails && offenderPersonalDetails.cnic) {
+      fetchIdCard(offenderPersonalDetails.cnic);
+    } else {
+      // If there's no CNIC, mark ID card loading as complete
+      setIdCardLoading(false);
+    }
+  }, [offenderPersonalDetails]);
+
+  // Update overall loading state whenever any of the individual loading states change
+  useEffect(() => {
+    setLoading(detailsLoading || offencesLoading || idCardLoading);
+  }, [detailsLoading, offencesLoading, idCardLoading]);
+
+  const fetchOffenderPersonalDetails = async () => {
+    setDetailsLoading(true);
     setError(null);
+
+    try {
+      const response = await axios.get(
+        `${config.API_BASE_URL}/offenders/get_offender_personal_details`,
+        { params: { offender_id: offenderid } }
+      );
+
+      if (response.data && response.data.profile) {
+        setOffenderPersonalDetails(response.data.profile);
+      } else {
+        setOffenderPersonalDetails({});
+      }
+    } catch (error) {
+      setError("Failed to load personal details.");
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  const fetchPastOffences = async () => {
+    setOffencesLoading(true);
     try {
       const response = await axios.get(
         `${config.API_BASE_URL}/offenders/get_offender_profile`,
@@ -36,10 +77,29 @@ const OffenderProfile = () => {
       );
       setReportData(response.data.reports || []);
     } catch (error) {
-      console.error("Error fetching report data:", error);
-      setError("Failed to load report data.");
+      setError(error.message || "Failed to load report data.");
     } finally {
-      setLoading(false);
+      setOffencesLoading(false);
+    }
+  };
+
+  const fetchIdCard = async (cnic) => {
+    if (!cnic) return;
+    
+    setIdCardLoading(true);
+    try {
+      const response = await axios.get(
+        `${config.API_BASE_URL}/offenders/get_offender_idcard`,
+        { params: { cnic } }
+      );
+      
+      if (response.data && response.data.image) {
+        setIdCardImage(response.data.image);
+      }
+    } catch (error) {
+      console.error("Failed to fetch ID card:", error);
+    } finally {
+      setIdCardLoading(false);
     }
   };
 
@@ -48,61 +108,85 @@ const OffenderProfile = () => {
       <Sidebar />
       <div style={styles.mainContent}>
         <div style={styles.headerContainer}>
-          <h1 style={styles.title}>Case Report Details</h1>
-          <div style={styles.offenderid}>Report ID: {offenderid}</div>
+          <h1 style={styles.title}>Offender Profile</h1>
+          <div style={styles.offenderid}>Offender ID: {offenderid}</div>
         </div>
 
         {loading ? (
           <div style={styles.loadingContainer}>
             <CircularProgress size={60} style={styles.spinner} />
-            <p style={styles.loadingText}>Loading report details...</p>
+            <p style={styles.loadingText}>Loading offender data...</p>
           </div>
         ) : error ? (
           <p style={{ color: "red", textAlign: "center" }}>{error}</p>
         ) : (
-          <div style={styles.row}>
+          <div style={styles.col}>
+
+            <div style={styles.row}>
+              <Paper style={styles.personalSection}>
+                <p><strong>Name:</strong> {offenderPersonalDetails.name || "N/A"}</p>
+                <p><strong>CNIC:</strong> {offenderPersonalDetails.cnic || "N/A"}</p>
+                <p><strong>Address:</strong> {offenderPersonalDetails.address || "N/A"}</p>
+              </Paper>
+
+              <Paper style={styles.personalSection}>
+                {idCardImage ? (
+                  <div>
+                    <h3>ID Card</h3>
+                    <img 
+                      src={idCardImage} 
+                      alt="ID Card" 
+                      style={{ maxWidth: "100%", maxHeight: "300px" }} 
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <h3>ID Card</h3>
+                    <p>No ID card available</p>
+                  </div>
+                )}
+              </Paper>
+            </div>
+
             <TableContainer component={Paper} style={styles.offencesSection}>
+              <h2>Past Offences</h2>
               <Table>
                 <TableHead style={styles.tableHeader}>
                   <TableRow style={styles.tableRow}>
-                    {["Report ID", "Location", "Date", "Time", "Fine Status", "Fine Issued (Rs.)"].map((header, index) => (
+                    {["Sr.", "Location", "Date", "Time", "Fine Issued (Rs.)", "Fine Status"].map((header, index) => (
                       <TableCell key={index}><strong>{header}</strong></TableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {reportData.map((report, index) => (
-                    <TableRow key={index}>
-                      {["report_id", "location", "timestamp", "timestamp", "fine_status", "fine_issued"].map((key, i) => (
-                        <TableCell key={i} style={styles.tableCell}>
-                          {key.includes("timestamp") ? (
-                            new Date(report[key])[i === 2 ? "toLocaleDateString" : "toLocaleTimeString"]()
-                          ) : key === "fine_status" ? (
-                            <Button
-                              style={{ 
-                                backgroundColor: STATUS_STYLES[report.fine_status]?.background || STATUS_STYLES.default.background, 
-                                color: "white", 
-                                borderRadius: 7, 
-                                border: `1px solid ${STATUS_STYLES[report.fine_status]?.border || STATUS_STYLES.default.border}`, 
-                                padding: "4px 16px", 
-                                fontWeight: 500, 
-                                textTransform: "none",
-                                fontSize: "0.75rem",
-                                minWidth: 80
-                              }}
-                            >
-                              {report[key]}
-                            </Button>
-                          ) : (
-                            report[key]
-                          )}
+                  {reportData.length > 0 ? (
+                    reportData.map((report, index) => (
+                      <TableRow key={index}>
+                        <TableCell style={styles.tableCell}>{index + 1}</TableCell>
+                        <TableCell style={styles.tableCell}>{report.location}</TableCell>
+                        <TableCell style={styles.tableCell}>
+                          {new Date(report.timestamp).toLocaleDateString()}
                         </TableCell>
-                      ))}
+                        <TableCell style={styles.tableCell}>
+                          {new Date(report.timestamp).toLocaleTimeString()}
+                        </TableCell>
+                        <TableCell style={styles.tableCell}>{report.fine_issued}</TableCell>
+                        <TableCell style={styles.tableCell}>
+                          <Button style={getFineStatusStyle(report.fine_status)}>
+                            {report.fine_status}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} style={{ textAlign: "center" }}>No past offences found</TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
+
           </div>
         )}
       </div>
