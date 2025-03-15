@@ -63,15 +63,11 @@ const styles = {
     gridTemplateColumns: "1fr 1fr",
     width: "100%",
   },
-
   col: {
     display: "flex",
     flexDirection: "column",
     gap: "2rem",
   },
-
-
-
   offencesSection: {
     background: "#fff",
     padding: "1.5rem",
@@ -85,6 +81,30 @@ const styles = {
     borderRadius: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
     width: "80%",
+  },
+  personalInfoContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  personalDetails: {
+    flex: "1",
+  },
+  idCardContainer: {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 10px",
+  },
+  idCardImage: {
+    maxWidth: "100%",
+    maxHeight: "200px",
+    objectFit: "contain",
+    borderRadius: "8px",
+    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
   },
   table: {
     width: "100%",

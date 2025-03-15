@@ -124,27 +124,30 @@ const OffenderProfile = () => {
 
             <div style={styles.row}>
               <Paper style={styles.personalSection}>
-                <p><strong>Name:</strong> {offenderPersonalDetails.name || "N/A"}</p>
-                <p><strong>CNIC:</strong> {offenderPersonalDetails.cnic || "N/A"}</p>
-                <p><strong>Address:</strong> {offenderPersonalDetails.address || "N/A"}</p>
-              </Paper>
-
-              <Paper style={styles.personalSection}>
-                {idCardImage ? (
-                  <div>
-                    <h3>ID Card</h3>
-                    <img 
-                      src={idCardImage} 
-                      alt="ID Card" 
-                      style={{ maxWidth: "100%", maxHeight: "300px" }} 
-                    />
+                <div style={styles.personalInfoContainer}>
+                  <div style={styles.personalDetails}>
+                    <p><strong>Name:</strong> {offenderPersonalDetails.name || "N/A"}</p>
+                    <p><strong>CNIC:</strong> {offenderPersonalDetails.cnic || "N/A"}</p>
+                    <p><strong>Address:</strong> {offenderPersonalDetails.address || "N/A"}</p>
                   </div>
-                ) : (
-                  <div>
-                    <h3>ID Card</h3>
-                    <p>No ID card available</p>
+                  
+                  <div style={styles.idCardContainer}>
+                    {idCardLoading ? (
+                      <CircularProgress size={30} />
+                    ) : idCardImage ? (
+                      <img 
+                        src={idCardImage} 
+                        alt="ID Card" 
+                        style={styles.idCardImage} 
+                      />
+                    ) : (
+                      <div>
+                        <h3>ID Card</h3>
+                        <p>No ID card available</p>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </Paper>
             </div>
 
