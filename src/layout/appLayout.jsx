@@ -6,6 +6,8 @@ import Reports from "../pages/listReports/listReports";
 import ReportDetails from "../pages/reportDetails/reportDetails";
 import OffenderProfile from "../pages/offenderProfile/offenderProfile";
 import Detect from "../pages/detect/detect";
+import Landing from "../pages/landing/landing"
+
 
 
 const AppLayout = () => {
@@ -19,8 +21,9 @@ const AppLayout = () => {
           {/* all unassigned ones */}
           <Route path="*" element={<Navigate to="/dashboard" />} />   
 
+        
 
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/reportDetails/:reportid" element={<ReportDetails />} />
