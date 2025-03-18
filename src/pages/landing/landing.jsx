@@ -120,7 +120,18 @@ const MainSection = () => {
       </div>
 
       <div style={litterStatsMainStyle}>
-        <img src={LitterStatsMain} alt="Litter Stats" style={{ width: "100%", borderRadius: "30px", height: "auto" }} />
+      <img
+          src={LitterStatsMain}
+          alt="Litter Stats"
+          style={{
+            width: "100%",
+            height: "auto",
+            borderTopLeftRadius: "30px",
+            borderBottomLeftRadius: "30px",
+            borderTopRightRadius: "0px",
+            borderBottomRightRadius: "0px",
+          }}
+        />
       </div>
 
       <svg style={waveOverlayStyle} viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
