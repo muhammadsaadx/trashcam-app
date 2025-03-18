@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet.heat";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
 import "leaflet/dist/leaflet.css";
 import styles from "./dashboard.styles";
 import config from "../../config/config";
@@ -35,8 +35,6 @@ const Dashboard = () => {
     fetchData("get_longitude_latitude", setLitterLocationData);
   }, []);
 
-
-
   const fetchData = async (endpoint, setter) => {
     try {
       const response = await fetch(`${config.API_BASE_URL}/dashboard/${endpoint}`);
@@ -47,10 +45,7 @@ const Dashboard = () => {
     }
   };
 
-
   return (
-
-    
     <div style={styles.dashboard}>
       <Sidebar />
       <header style={styles.dashboardHeader}>
@@ -61,37 +56,85 @@ const Dashboard = () => {
           <div style={styles.chartCard}>
             <div style={styles.chartHeader}>
               <h2 style={styles.headerText}>Monthly Litter Count</h2>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(+e.target.value)}
-                style={styles.dropdown}
-              >
-                {Object.keys(litterRateData).map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
+              <div style={styles.dropdownContainer}>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(+e.target.value)}
+                  style={styles.dropdown}
+                >
+                  {Object.keys(litterRateData).map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div style={styles.chartWrapper}>
               <ResponsiveContainer width="100%" height="100%">
+
                 <LineChart
                   data={litterRateData[selectedYear] || []}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#07715B" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="#F4F0FF" stopOpacity={0.1}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#aaa', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#aaa', fontSize: 12 }}
+                    domain={['auto', 'auto']}
+                  />
+                  <CartesianGrid 
+                    vertical={false} 
+                    horizontal={true}
+                    strokeDasharray="3 3" 
+                    stroke="#eee"
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '5px',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="none"
+                    fillOpacity={1}
+                    fill="url(#colorCount)"
+                  />
                   <Line
                     type="monotone"
                     dataKey="count"
                     stroke="#07715B"
-                    activeDot={{ r: 8 }}
                     strokeWidth={2}
+                    dot={false}
+                    activeDot={{ 
+                      r: 6, 
+                      stroke: '#07715B', // Green border
+                      strokeWidth: 2, 
+                      fill: '#fff' // White fill
+                    }}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationEasing="ease-in-out"
                   />
                 </LineChart>
+
+                
               </ResponsiveContainer>
             </div>
           </div>

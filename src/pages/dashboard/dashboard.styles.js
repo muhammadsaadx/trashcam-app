@@ -1,5 +1,3 @@
-import { height, maxHeight } from "@mui/system";
-
 const styles = {
   dashboard: {
     position: 'fixed',
@@ -9,10 +7,10 @@ const styles = {
     left: '300px',
     backgroundColor: '#F4F7F8',
     padding: '20px',
-    fontFamily: "'Source Sans Pro', sans-serif",
+    fontFamily: "Plus Jakarta Sans, sans-serif",
   },
   dashboardHeader: {
-    fontFamily: "'Source Sans Pro', sans-serif",
+    fontFamily: "Plus Jakarta Sans, sans-serif",
     fontSize: '1.5rem',
     color: '#212529',
     paddingLeft: '40px',
@@ -32,41 +30,63 @@ const styles = {
   chartCard: {
     backgroundColor: '#fff',
     borderRadius: '25px',
-    padding: '20px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    flex: '1 1 400px', // Allows flexibility
-    minWidth: '320px', // Prevents shrinking too much
-    maxWidth: '38%', // Avoids going too wide
-    height: '10%', // Adapts to content
+    padding: '25px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
+    flex: '1 1 400px',
+    minWidth: '320px',
+    maxWidth: '38%',
+    height: '10%',
+    fontFamily: "Plus Jakarta Sans, sans-serif",
   },
   chartHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '10px',
+    marginBottom: '20px',
   },
   chartWrapper: {
     width: '100%',
     height: '280px',
     overflow: 'hidden',
   },
+  dropdownContainer: {
+    position: 'relative',
+    display: 'inline-block',
+  },
   dropdown: {
-    padding: '5px',
-    fontSize: '16px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    MozAppearance: 'none',
+    padding: '8px 32px 8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#07715B',
+    backgroundColor: '#f7f9fc',
+    border: '1px solid #e1e4e8',
+    borderRadius: '8px',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    cursor: 'pointer',
+    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2307715B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 10px center',
+    backgroundSize: '12px',
+    transition: 'all 0.2s ease',
+    outline: 'none',
+    fontFamily: "Plus Jakarta Sans, sans-serif",
   },
   mapContainer: {
     width: '40%',
     height: '387px',
     borderRadius: '25px',
     overflow: 'hidden',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
   },
   headerText: {
     fontSize: '20px',
     color: '#333',
-    fontWeight: 'bold',
+    fontWeight: '600',
+    margin: 0,
+    fontFamily: "Plus Jakarta Sans, sans-serif",
   },
 };
 
