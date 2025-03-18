@@ -5,6 +5,10 @@
 venv/
 .venv/
 
+
+videos/
+
+
 # Ignore Python cache files
 __pycache__/
 *.pyc

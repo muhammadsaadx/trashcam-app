@@ -28,5 +28,5 @@ app.add_middleware(
 )
 
 # Directory where videos will be saved
-detect_litter()
+#detect_litter()
 
