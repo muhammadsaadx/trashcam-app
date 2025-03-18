@@ -1,10 +1,12 @@
 import React from "react";
-
 import Card1Image from "../../assests/vectors/Card1_NewOffenders_ReportTime.svg";
 import Card2Image from "../../assests/vectors/Card2_FineAnalysis.svg";
 import Card3Image from "../../assests/vectors/Card3_LitterTrend.svg";
-
-// Import tech icons
+import LitterFromCar from "../../assests/images/LitterFromCar.jpg"
+import LitterFromCar2 from "../../assests/images/LitterFromCarHighlight.jpg"
+import ScaleUpGraph from "../../assests/vectors/ScaleUpGraph.svg"
+import ScaleDownGraph from "../../assests/vectors/ScaleDownGraph.svg"
+import HeatMap from "../../assests/vectors/HeatMap.svg"
 import AwsIcon from "../../assests/vectors/tech_icons/aws_icon.svg";
 import FastapiIcon from "../../assests/vectors/tech_icons/fastapi_icon.svg";
 import FigmaIcon from "../../assests/vectors/tech_icons/figma_icon.svg";
@@ -14,8 +16,14 @@ import PostgresqlIcon from "../../assests/vectors/tech_icons/postgresql_icon.svg
 import PythonIcon from "../../assests/vectors/tech_icons/python-icon.svg";
 import ReactIcon from "../../assests/vectors/tech_icons/react_icon.svg";
 import TensorflowIcon from "../../assests/vectors/tech_icons/tensorflow_icon.svg";
+import FacialRecognitionImage from "../../assests/vectors/FacialRecognitionID.svg"; 
 
-// Main Section Component
+
+import FinesMain from "../../assests/vectors/FinesMain.svg";
+import NewIncidentsMain from "../../assests/vectors/NewIncidentsMain.svg";
+import TotalReportsMain from "../../assests/vectors/TotalReportsMain.svg";
+import LitterStatsMain from "../../assests/vectors/LitterStatsMain.svg";
+
 const MainSection = () => {
   return (
     <div 
@@ -24,14 +32,145 @@ const MainSection = () => {
         minHeight: "100vh",
         background: "linear-gradient(60deg, #009370 0%, #009370 33.33%, #006A53 66.66%, #009370 100%)",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
         padding: "20px",
         boxSizing: "border-box",
         position: "relative",
-        fontFamily: "'Onest', sans-serif", // Apply Onest font
+        fontFamily: "'Onest', sans-serif",
       }}
     >
+      {/* Content Container */}
+      <div 
+        style={{
+          position: "relative",
+          zIndex: 10,
+          textAlign: "center",
+          color: "white",
+          maxWidth: "90%",
+          padding: "20px",
+          marginTop: "5vh"
+        }}
+      >
+        <h1 
+          style={{
+            fontSize: "4rem",
+            fontWeight: "700",
+            marginBottom: "0.5rem",
+            lineHeight: "1.1"
+          }}
+        >
+          Track Your Litter
+        </h1>
+        <h2
+          style={{
+            fontSize: "4rem",
+            fontWeight: "700",
+            marginTop: "0",
+            marginBottom: "2rem",
+            lineHeight: "1.1"
+          }}
+        >
+          Keep Your City Clean
+        </h2>
+        <p
+          style={{
+            fontSize: "1.5rem",
+            marginBottom: "3rem",
+            maxWidth: "80%",
+            margin: "0 auto 3rem",
+            lineHeight: "1.6"
+          }}
+        >
+          Detect litter in your area with TrashCam's AI-powered technology, using real-time
+          computer vision and IoT to promote cleaner, safer spaces.
+        </p>
+      </div>
+      
+      {/* TotalReportsMain SVG in bottom left */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "40px",
+          left: "40px",
+          zIndex: 20,
+          width: "400px", // Increased size
+          height: "auto"
+        }}
+      >
+        <img 
+          src={TotalReportsMain} 
+          alt="Total Reports" 
+          style={{
+            width: "100%",
+            height: "auto"
+          }}
+        />
+      </div>
+
+      {/* FinesMain SVG positioned to the right */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "40px",
+          left: "480px", // Adjusted positioning
+          zIndex: 19,
+          width: "400px", // Increased size
+          height: "auto"
+        }}
+      >
+        <img 
+          src={FinesMain} 
+          alt="Fines" 
+          style={{
+            width: "100%",
+            height: "auto"
+          }}
+        />
+      </div>
+
+      {/* NewIncidentsMain SVG positioned above FinesMain */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "200px",
+          left: "480px", // Adjusted positioning
+          zIndex: 20,
+          width: "400px", // Increased size
+          height: "auto"
+        }}
+      >
+        <img 
+          src={NewIncidentsMain} 
+          alt="New Incidents" 
+          style={{
+            width: "100%",
+            height: "auto"
+          }}
+        />
+      </div>
+
+      {/* LitterStatsMain SVG on far right */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "40px",
+          right: "40px",
+          zIndex: 20,
+          width: "400px", // Increased size
+          height: "auto"
+        }}
+      >
+        <img 
+          src={LitterStatsMain} 
+          alt="Litter Stats" 
+          style={{
+            width: "100%",
+            height: "auto"
+          }}
+        />
+      </div>
+      
       {/* White Wave Overlay */}
       <svg 
         style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100vh" }} 
@@ -47,7 +186,6 @@ const MainSection = () => {
   );
 };
 
-// Tech Icons Section Component
 const TechIconsSection = () => {
   const techSectionStyle = {
     backgroundColor: "#FFFFFF",
@@ -92,21 +230,20 @@ const TechIconsSection = () => {
     <div style={techSectionStyle}>
       <h2 style={techTitleStyle}>Technologies Used</h2>
       <div style={techIconsContainerStyle}>
-        <img src={AwsIcon} alt="AWS" style={techIconStyle} />
-        <img src={ReactIcon} alt="React" style={techIconStyle} />
-        <img src={GithubIcon} alt="GitHub" style={techIconStyle} />
-        <img src={PostgresqlIcon} alt="PostgreSQL" style={techIconStyle} />
         <img src={PythonIcon} alt="Python" style={techIconStyle} />
+        <img src={ReactIcon} alt="React" style={techIconStyle} />
+        <img src={PostgresqlIcon} alt="PostgreSQL" style={techIconStyle} />
+        <img src={GithubIcon} alt="GitHub" style={techIconStyle} />
         <img src={KotlinIcon} alt="Kotlin" style={techIconStyle} />
         <img src={FastapiIcon} alt="FastAPI" style={techIconStyle} />
         <img src={FigmaIcon} alt="Figma" style={techIconStyle} />
         <img src={TensorflowIcon} alt="TensorFlow" style={techIconStyle} />
+        <img src={AwsIcon} alt="AWS" style={techIconStyle} />
       </div>
     </div>
   );
 };
 
-// Cards Section Component
 const CardsSection = () => {
   const cardsContainer = {
     display: "flex",
@@ -247,7 +384,6 @@ const CardsSection = () => {
   );
 };
 
-// DetectLitter Section Component
 const DetectLitterSection = () => {
   const sectionStyle = {
     width: "100%",
@@ -266,7 +402,7 @@ const DetectLitterSection = () => {
     maxWidth: "1200px",
     width: "100%",
     gap: "120px",
-    marginLeft: "230px",
+    marginLeft: "330px",
   };
 
   const imageContainerStyle = {
@@ -281,7 +417,7 @@ const DetectLitterSection = () => {
 
   const imageStyle = {
     width: "100%",
-    borderRadius: "8px",
+    borderRadius: "15px",
     marginBottom: "10px",
   };
 
@@ -312,33 +448,34 @@ const DetectLitterSection = () => {
   };
 
   const buttonStyle = {
-    display: "inline-flex",
-    alignItems: "center",
-    padding: "12px 24px",
-    backgroundColor: "#FFF",
-    border: "1px solid #DDD",
-    borderRadius: "6px",
-    fontSize: "1rem",
-    fontWeight: "600", // Onest font weight
-    color: "#333",
-    cursor: "pointer",
-    textDecoration: "none",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-    transition: "all 0.2s ease",
-    width: "fit-content",
-  };
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "10px 20px",
+        backgroundColor: "#FFF",
+        border: "1px solid #DDD",
+        borderRadius: "25px",
+        fontSize: "0.9rem",
+        fontWeight: "600",
+        color: "#333",
+        cursor: "pointer",
+        textDecoration: "none",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+        transition: "all 0.2s ease",
+        width: "fit-content",
+        marginTop: "15px",
+      };
 
   return (
     <div style={sectionStyle}>
       <div style={containerStyle}>
         <div style={imageContainerStyle}>
           <img 
-            src={Card3Image}
+            src={LitterFromCar}
             alt="Car with litter detection" 
             style={imageStyle} 
           />
           <img 
-            src={Card2Image}
+            src={LitterFromCar2}
             alt="Highway litter detection" 
             style={imageStyle} 
           />
@@ -363,7 +500,525 @@ const DetectLitterSection = () => {
   );
 };
 
-// Main Landing Component
+const FacialRecognitionSection = () => {
+  const sectionStyle = {
+    width: "100%",
+    backgroundColor: "#F5FEFC", // Light purple background
+    padding: "80px 20px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "'Onest', sans-serif",
+  };
+
+  const containerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    maxWidth: "1200px",
+    width: "100%",
+  };
+
+  const textContainerStyle = {
+    width: "45%",
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+    paddingRight: "40px",
+  };
+
+  const titleStyle = {
+    fontSize: "2rem",
+    fontWeight: "600",
+    color: "#333",
+    margin: "0 0 10px 0",
+  };
+
+  const highlightStyle = {
+    color: "#4B44EF", 
+  };
+
+  const descriptionStyle = {
+    fontSize: "1.1rem",
+    lineHeight: "1.6",
+    color: "#555",
+    margin: "0 0 20px 0",
+    fontWeight: "400",
+  };
+
+  const buttonStyle = {
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "10px 20px",
+        backgroundColor: "#FFF",
+        border: "1px solid #DDD",
+        borderRadius: "25px",
+        fontSize: "0.9rem",
+        fontWeight: "600",
+        color: "#333",
+        cursor: "pointer",
+        textDecoration: "none",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+        transition: "all 0.2s ease",
+        width: "fit-content",
+        marginTop: "15px",
+      };
+
+  const imageContainerStyle = {
+    width: "55%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+  };
+
+  return (
+    <div style={sectionStyle}>
+      <div style={containerStyle}>
+        <div style={textContainerStyle}>
+          <h2 style={titleStyle}>
+            Accurately document littering incidents with <span style={highlightStyle}>Facial & Number Plate Recognition</span>
+          </h2>
+          <p style={descriptionStyle}>
+            Easily capture and document littering incidents using advanced facial and number plate recognition technology. This ensures accurate identification of violators in real-time. With high precision, authorities can act quickly and efficiently to address issues promoting a cleaner, more responsible community.
+          </p>
+          <a href="#" style={buttonStyle}>Learn More →</a>
+        </div>
+        
+        <div style={imageContainerStyle}>
+          <img 
+            src={FacialRecognitionImage} 
+            alt="Facial Recognition ID Matching"
+            style={{
+              width: "100%",
+              maxWidth: "450px",
+              borderRadius: "15px",
+              backgroundColor: "#EBE6FE",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LitterTrendsSection = () => {
+        const sectionStyle = {
+          width: "100%",
+          backgroundColor: "#FFFFFF",
+          padding: "80px 20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontFamily: "'Onest', sans-serif",
+        };
+      
+        const containerStyle = {
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          maxWidth: "1800px", // Increased maxWidth to allow more space for content
+          width: "100%",
+          gap: "80px", // Increased gap between the card and the text
+        };
+      
+        const cardStyle = {
+          width: "100%",
+          maxWidth: "800px",
+          padding: "10px",
+          backgroundColor: "#E8F4FF",
+          borderRadius: "15px",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start", // Align items to the start (left)
+          height: "450px",
+        };
+      
+        // New heading style for Islamabad
+        const headingStyle = {
+          color: "#333",
+          fontSize: "1.8rem",
+          fontWeight: "700",
+          margin: "20px 0px 0px 20px", // Adjusted margin to move it to the top left
+          alignSelf: "flex-start", // Ensure the heading aligns to the left
+        };
+      
+        // Modified to contain the images in a row
+        const imagesContainerStyle = {
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        };
+      
+        const contentContainerStyle = {
+          flex: 1,
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "15px",
+          maxWidth: "600px", // Increased maxWidth for the content section
+        };
+      
+        const titleStyle = {
+          color: "#333",
+          fontSize: "1.6rem",
+          margin: 0,
+          fontWeight: "600",
+        };
+      
+        const textStyle = {
+          color: "#555",
+          lineHeight: "1.6",
+          fontSize: "1rem",
+          margin: 0,
+          fontWeight: "400",
+        };
+      
+        const buttonStyle = {
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "10px 20px",
+                backgroundColor: "#FFF",
+                border: "1px solid #DDD",
+                borderRadius: "25px",
+                fontSize: "0.9rem",
+                fontWeight: "600",
+                color: "#333",
+                cursor: "pointer",
+                textDecoration: "none",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                transition: "all 0.2s ease",
+                width: "fit-content",
+                marginTop: "15px",
+              };
+      
+        const imageContainerStyle = {
+          flex: 1,
+          padding: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        };
+      
+        const imageStyle = {
+          width: "100%",
+          maxWidth: "400px",
+          height: "350px",
+          objectFit: "contain",
+        };
+      
+        return (
+          <div style={sectionStyle}>
+            <div style={containerStyle}>
+              <div style={cardStyle}>
+                {/* Added Islamabad heading */}
+                <h1 style={headingStyle}>Islamabad</h1>
+                <div style={imagesContainerStyle}>
+                  <div style={imageContainerStyle}>
+                    <img 
+                      src={ScaleUpGraph} 
+                      alt="Littering trends visualization" 
+                      style={imageStyle}
+                    />
+                  </div>
+                  
+                  <div style={imageContainerStyle}>
+                    <img 
+                      src={ScaleDownGraph} 
+                      alt="Real-time monitoring" 
+                      style={imageStyle}
+                    />
+                  </div>
+                </div>
+              </div>
+      
+              <div style={contentContainerStyle}>
+                <h2 style={titleStyle}>
+                  Track citywide littering trends <span style={{ color: "#4566EA" }}>In Real-Time</span>
+                </h2>
+                <p style={textStyle}>
+                  Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
+                  Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
+                  Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
+                  Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
+                  Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
+                </p>
+                <a href="#" style={buttonStyle}>Learn More →</a>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+const MapSection = () => {
+        const sectionStyle = {
+          width: "100%",
+          backgroundColor: "#FFFFFF",
+          padding: "80px 20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontFamily: "'Onest', sans-serif",
+        };
+      
+        const containerStyle = {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          maxWidth: "1600px",
+          width: "100%",
+          gap: "40px",
+        };
+      
+        const contentContainerStyle = {
+          flex: "0 0 45%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "15px",
+        };
+      
+        const titleContainerStyle = {
+          marginBottom: "12px",
+        };
+      
+        const titleStyle = {
+          color: "#1A2754",
+          fontSize: "1.8rem",
+          margin: 0,
+          fontWeight: "700",
+          lineHeight: "1.3",
+        };
+      
+        const highlightStyle = {
+          color: "#4566EA",
+          textDecoration: "none",
+        };
+      
+        const textStyle = {
+          color: "#666",
+          lineHeight: "1.6",
+          fontSize: "1rem",
+          margin: "0 0 10px 0",
+          fontWeight: "400",
+        };
+      
+        const buttonStyle = {
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "10px 20px",
+                backgroundColor: "#FFF",
+                border: "1px solid #DDD",
+                borderRadius: "25px",
+                fontSize: "0.9rem",
+                fontWeight: "600",
+                color: "#333",
+                cursor: "pointer",
+                textDecoration: "none",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                transition: "all 0.2s ease",
+                width: "fit-content",
+                marginTop: "15px",
+              };
+      
+        const cardStyle = {
+          flex: "0 0 45%",
+          borderRadius: "12px",
+          overflow: "hidden",
+          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.08)",
+        };
+      
+        const mapImageStyle = {
+          width: "100%",
+          height: "auto",
+          display: "block",
+        };
+      
+        return (
+          <div style={sectionStyle}>
+            <div style={containerStyle}>
+              {/* Content on the left */}
+              <div style={contentContainerStyle}>
+                <div style={titleContainerStyle}>
+                  <h2 style={titleStyle}>
+                    Track Littering Activity with <span style={highlightStyle}>Detection &<br />Reporting Tools</span>
+                  </h2>
+                </div>
+                <p style={textStyle}>
+                  Monitor littering in real-time and identify high-violation areas. Use 
+                  this data to streamline cleanup efforts and enhance enforcement, 
+                  ensuring cleaner and safer public spaces.
+                </p>
+                <a href="#" style={buttonStyle}>Learn More →</a>
+              </div>
+      
+              {/* Map Card on the right */}
+              <div style={cardStyle}>
+                <img 
+                  src={HeatMap}
+                  alt="Litter Map Heatmap View" 
+                  style={mapImageStyle}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      };
+      
+const HeroBanner = () => {
+return (
+        <div 
+        style={{ 
+        width: "70vw",
+        minHeight: "40vh",
+        background: "linear-gradient(60deg, #009370 0%, #009370 33.33%, #006A53 66.66%, #009370 100%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+        boxSizing: "border-box",
+        position: "relative",
+        fontFamily: "'Onest', sans-serif",
+        color: "#FFFFFF",
+        textAlign: "center",
+        borderRadius: "50px", // Curved borders
+        margin: "auto", // Center the banner
+        overflow: "hidden", // Ensure content respects the border radius
+        marginBottom: "3rem",
+        marginTop: "20rem",
+
+        }}
+        >
+        {/* Hero Content */}
+        <h1 style={{ fontSize: "3rem", fontWeight: "600", marginBottom: "1rem" }}>
+        Be the Change the World Needs!
+        </h1>
+        <p style={{ fontSize: "1.2rem", marginBottom: "2.5rem", maxWidth: "600px" }}>
+        Join TrashCams mission and keep our communities clean.
+        </p>
+        
+        {/* Email Input and Button */}
+        <div style={{ 
+        display: "flex", 
+        backgroundColor: "#FFFFFF", 
+        borderRadius: "50px", 
+        padding: "0.5rem", 
+        width: "100%", 
+        maxWidth: "450px",
+        marginBottom: "1rem"
+        }}>
+        <input 
+        type="email" 
+        placeholder="Enter your email" 
+        style={{ 
+                flex: 1, 
+                border: "none", 
+                outline: "none", 
+                padding: "0.75rem 1.5rem", 
+                borderRadius: "50px",
+                fontSize: "1rem",
+                fontFamily: "'Onest', sans-serif"
+        }} 
+        />
+        <button style={{ 
+        backgroundColor: "#009370", 
+        color: "#FFFFFF", 
+        border: "none", 
+        borderRadius: "50px", 
+        padding: "0.75rem 1.5rem", 
+        cursor: "pointer",
+        fontWeight: "600",
+        fontSize: "1rem",
+        fontFamily: "'Onest', sans-serif"
+        }}>
+        Get started
+        </button>
+        </div>
+        
+        <p style={{ fontSize: "0.8rem", opacity: "0.8" }}>
+        By clicking Sign Up you're confirming that you agree with our Terms and Conditions.
+        </p>
+
+        </div>
+
+);
+};
+
+
+const NavigationBar = () => {
+        const navStyle = {
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.5rem 5%", // Reduced vertical padding
+          background: "linear-gradient(60deg, #009370 0%, #009370 17.33%, #006A53 59.66%, #009370 100%)",
+          zIndex: 1000,
+          fontFamily: "'Onest', sans-serif",
+          height: "60px", // Explicit height control
+        };
+      
+        const logoStyle = {
+          fontSize: "1.4rem", // Slightly smaller logo
+          fontWeight: "700",
+          color: "#fff", // White text for contrast
+          textDecoration: "none",
+        };
+      
+        const navLinksStyle = {
+          display: "flex",
+          gap: "2rem", // Reduced gap
+          alignItems: "center",
+        };
+      
+        const linkStyle = {
+          color: "rgba(255, 255, 255, 0.9)", // Semi-transparent white
+          textDecoration: "none",
+          fontSize: "0.95rem", // Slightly smaller text
+          fontWeight: "500",
+          transition: "all 0.2s ease",
+          ":hover": {
+            color: "#fff",
+            opacity: 1
+          }
+        };
+      
+        const buttonStyle = {
+          backgroundColor: "#fff",
+          color: "#009370",
+          padding: "0.6rem 1.2rem", // Smaller button
+          borderRadius: "20px",
+          textDecoration: "none",
+          fontWeight: "600",
+          transition: "all 0.2s ease",
+          ":hover": {
+            transform: "translateY(-1px)",
+            boxShadow: "0 3px 8px rgba(0, 0, 0, 0.1)"
+          }
+        };
+      
+        return (
+          <nav style={navStyle}>
+            <a href="/" style={logoStyle}>trashcam</a>
+            <div style={navLinksStyle}>
+              <a href="#features" style={linkStyle}>Feature Blog</a>
+              <a href="#about" style={linkStyle}>About Us</a>
+              <a href="#blog" style={linkStyle}>Blog</a>
+              <a href="#contact" style={linkStyle}>Contact Us</a>
+              <a href="#get-started" style={buttonStyle}>Get started</a>
+            </div>
+          </nav>
+        );
+      };
+
+
 const Landing = () => {
   const globalStyle = document.createElement("style");
   globalStyle.innerHTML = `
@@ -392,6 +1047,11 @@ const Landing = () => {
       <TechIconsSection />
       <CardsSection />
       <DetectLitterSection />
+      <FacialRecognitionSection />
+      <LitterTrendsSection />
+      <MapSection />
+      <HeroBanner />
+      <NavigationBar />
     </div>
   );
 };
