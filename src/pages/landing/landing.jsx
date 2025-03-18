@@ -23,6 +23,7 @@ import FinesMain from "../../assests/vectors/FinesMain.svg";
 import NewIncidentsMain from "../../assests/vectors/NewIncidentsMain.svg";
 import TotalReportsMain from "../../assests/vectors/TotalReportsMain.svg";
 import LitterStatsMain from "../../assests/vectors/LitterStatsMain.svg";
+import { BorderColor } from "@mui/icons-material";
 
 const MainSection = () => {
   return (
@@ -956,9 +957,8 @@ const NavigationBar = () => {
           left: 0,
           right: 0,
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
-          padding: "0.5rem 5%", // Reduced vertical padding
+          padding: "0.1rem 5%", // Reduced vertical padding
           background: "linear-gradient(60deg, #009370 0%, #009370 17.33%, #006A53 59.66%, #009370 100%)",
           zIndex: 1000,
           fontFamily: "'Onest', sans-serif",
@@ -966,10 +966,14 @@ const NavigationBar = () => {
         };
       
         const logoStyle = {
-          fontSize: "1.4rem", // Slightly smaller logo
-          fontWeight: "700",
-          color: "#fff", // White text for contrast
-          textDecoration: "none",
+          height: "35px", // Adjust size as needed
+          flexShrink: 0, // Prevents shrinking
+        };
+      
+        const navLinksContainerStyle = {
+          display: "flex",
+          flexGrow: 1, // Takes up available space
+          justifyContent: "center", // Centers the links
         };
       
         const navLinksStyle = {
@@ -979,44 +983,51 @@ const NavigationBar = () => {
         };
       
         const linkStyle = {
-          color: "rgba(255, 255, 255, 0.9)", // Semi-transparent white
+          color: "rgba(255, 255, 255, 0.9)",
           textDecoration: "none",
-          fontSize: "0.95rem", // Slightly smaller text
+          fontSize: "0.95rem",
           fontWeight: "500",
           transition: "all 0.2s ease",
-          ":hover": {
-            color: "#fff",
-            opacity: 1
-          }
         };
       
         const buttonStyle = {
-          backgroundColor: "#fff",
-          color: "#009370",
-          padding: "0.6rem 1.2rem", // Smaller button
+          backgroundColor: "transparent",
+          borderColor: "#fff",
+          color: "#fff",
+          padding: "0.6rem 1.2rem",
           borderRadius: "20px",
           textDecoration: "none",
-          fontWeight: "600",
+          fontWeight: "100",
           transition: "all 0.2s ease",
-          ":hover": {
-            transform: "translateY(-1px)",
-            boxShadow: "0 3px 8px rgba(0, 0, 0, 0.1)"
-          }
+          border: "1px solid #fff",
+          marginLeft: "auto", // Pushes the button to the right
         };
       
         return (
           <nav style={navStyle}>
-            <a href="/" style={logoStyle}>trashcam</a>
-            <div style={navLinksStyle}>
-              <a href="#features" style={linkStyle}>Feature Blog</a>
-              <a href="#about" style={linkStyle}>About Us</a>
-              <a href="#blog" style={linkStyle}>Blog</a>
-              <a href="#contact" style={linkStyle}>Contact Us</a>
-              <a href="#get-started" style={buttonStyle}>Get started</a>
+            <a href="/">
+              <img src="/logo_white.svg" alt="TrashCam Logo" style={logoStyle} />
+            </a>
+            <div style={navLinksContainerStyle}>
+              <div style={navLinksStyle}>
+                <a href="#features" style={linkStyle}>Feature Blog</a>
+                <a href="#about" style={linkStyle}>About Us</a>
+                <a href="#blog" style={linkStyle}>Blog</a>
+                <a href="#contact" style={linkStyle}>Contact Us</a>
+              </div>
             </div>
+            <a href="#get-started" style={buttonStyle}>Get started</a>
           </nav>
         );
       };
+      
+      
+      
+      
+      
+
+      
+
 
 
 const Landing = () => {
