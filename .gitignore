@@ -1,11 +1,52 @@
-# Ignore environment variables
+# Ignore Python environment variables
 .env
 
 # Ignore Python virtual environment
 venv/
+.venv/
 
 # Ignore Python cache files
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Ignore VS Code settings folder
+# Ignore VS Code settings and workspace files
 .vscode/
+*.code-workspace
+
+# Ignore logs and temporary files
+*.log
+logs/
+tmp/
+debug.log
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled and packaged files
+dist/
+build/
+*.egg-info/
+*.spec
+
+# Ignore weight and model files (if applicable)
+weights/
+models/
+checkpoints/
+
+# Ignore data directories (if they contain temporary/generated data)
+data/
+datasets/
+utils/sort/data/
+
+# Ignore Docker and Kubernetes related files (if applicable)
+*.dockerignore
+docker-compose.override.yml
+
+# Ignore Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
+# Ignore any other local configurations
+*.local

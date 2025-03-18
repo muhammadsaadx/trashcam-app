@@ -7,7 +7,7 @@ from apis.offenders.router import router as offenders_router
 from apis.detect.detect import router as detect_router
 
 # Import folder monitoring from litter.py
-from litter.litter import start_monitoring
+from litter.litter import detect_litter
 
 app = FastAPI()
 
@@ -24,8 +24,9 @@ app.add_middleware(
     allow_origins=["http://localhost:5173"],  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_headers=["*"],
 )
 
-# Start the folder monitoring in a background thread
-start_monitoring()
+# Directory where videos will be saved
+detect_litter()
+

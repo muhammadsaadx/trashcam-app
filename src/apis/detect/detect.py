@@ -6,7 +6,7 @@ from pathlib import Path
 router = APIRouter(prefix="/detect", tags=["detect"])
 
 # Create upload directory if it doesn't exist
-UPLOAD_DIR = Path("D:/TrashCamApp/trashcam-backend/to_process")
+UPLOAD_DIR = Path("D:/TrashCamApp/trashcam-backend/videos/to_process")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/")

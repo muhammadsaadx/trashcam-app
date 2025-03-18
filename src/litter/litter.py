@@ -1,82 +1,120 @@
-from pathlib import Path
+import os
 import threading
 import time
-import shutil
-import cv2
-import uuid
+import requests
+from pathlib import Path
+from bs4 import BeautifulSoup
 from ultralytics import YOLO
+from .process import process_video  # New import
 
-# Define directories
-TO_PROCESS_DIR = Path("D:/TrashCamApp/trashcam-backend/to_process")
-PROCESSED_DIR = Path("D:/TrashCamApp/trashcam-backend/processed")
-TO_PROCESS_DIR.mkdir(parents=True, exist_ok=True)  # Ensure 'to_process' exists
-PROCESSED_DIR.mkdir(parents=True, exist_ok=True)  # Ensure 'processed' exists
+# Configuration
+TO_PROCESS_DIR = Path("D:/TrashCamApp/trashcam-backend/videos/to_process")
+PROCESSED_DIR = Path("D:/TrashCamApp/trashcam-backend/videos/processed")
+TO_PROCESS_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-# Load YOLO model
-MODEL_PATH = Path("D:/TrashCamApp/trashcam-backend/best.pt")
+AWS_URL = os.getenv("AWS_URL")
+MODEL_PATH = Path("D:/TrashCamApp/trashcam-backend/weights/yolo12xepoch6.pt")
+
+# Initialize YOLOv12x model
 model = YOLO(str(MODEL_PATH))
+model.fuse()
+model.info(verbose=False)
 
-def process_video(video_path):
-    """ Process a video using YOLO and move it to the processed folder. """
-    cap = cv2.VideoCapture(str(video_path))
-    if not cap.isOpened():
-        print(f"Error: Cannot open video {video_path}")
+def get_video_list():
+    """Fetch list of videos from AWS bucket"""
+    try:
+        response = requests.get(AWS_URL)
+        if response.status_code != 200:
+            print(f"Failed to get video list: HTTP {response.status_code}")
+            return []
+        soup = BeautifulSoup(response.text, "xml")
+        return sorted([key.text for key in soup.find_all("Key") 
+                      if key.text.endswith(('.mp4', '.avi', '.mov'))])
+    except Exception as e:
+        print(f"Error fetching video list: {e}")
+        return []
+
+def delete_video_from_bucket(video_key):
+    """Remove video from AWS bucket"""
+    try:
+        response = requests.delete(f"{AWS_URL}{video_key}")
+        if response.status_code == 204:
+            print(f"Deleted {video_key} from AWS")
+        else:
+            print(f"Failed to delete {video_key}: HTTP {response.status_code}")
+    except Exception as e:
+        print(f"Error deleting {video_key}: {e}")
+
+def download_video():
+    """Download earliest video from AWS bucket"""
+    videos = get_video_list()
+    if not videos:
         return None
 
-    output_filename = f"{uuid.uuid4()}.mp4"
-    output_path = PROCESSED_DIR / output_filename
+    video_key = videos[0]
+    local_path = TO_PROCESS_DIR / Path(video_key).name
 
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    out = cv2.VideoWriter(str(output_path), fourcc, int(fps), (width, height))
+    if local_path.exists():
+        print(f"Video {local_path.name} already exists")
+        return local_path
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+    try:
+        response = requests.get(f"{AWS_URL}{video_key}", stream=True)
+        if response.status_code == 200:
+            with open(local_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            delete_video_from_bucket(video_key)
+            print(f"Downloaded {video_key}")
+            return local_path
+        else:
+            print(f"Failed to download {video_key}: HTTP {response.status_code}")
+    except Exception as e:
+        print(f"Download failed: {e}")
+    return None
 
-        results = model(frame)[0]  
-        if hasattr(results, 'boxes') and results.boxes is not None:
-            for box in results.boxes:
-                x1, y1, x2, y2 = map(int, box.xyxy[0])
-                conf = box.conf[0].item()
-                cls = int(box.cls[0].item())
-                label = f"{model.names.get(cls, 'Unknown')} {conf:.2f}"
-
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-        out.write(frame)
-
-    cap.release()
-    out.release()
-    return output_path
-
-def monitor_folder():
-    """ Monitors the 'to_process' folder, processes videos, and moves them to 'processed'. """
+def main_loop():
+    """Continuous processing loop"""
     while True:
         try:
-            files = list(TO_PROCESS_DIR.glob("*.mp4"))  # Check for video files
-            if files:
-                print("Processing videos...")  
-                for video_file in files:
-                    print(f"Processing: {video_file.name}")
-                    processed_path = process_video(video_file)
-
-                    if processed_path:
-                        print(f"Processed: {processed_path.name}")
-                        video_file.unlink()  # Delete the original video
+            video_path = download_video()
+            if video_path:
+                print(f"Processing {video_path.name}")
+                processed_path = process_video(video_path, model, PROCESSED_DIR)
+                if processed_path:
+                    print(f"Successfully processed and saved to {processed_path}")
+                
+                try:
+                    video_path.unlink()
+                    print(f"Cleaned up {video_path.name}")
+                except Exception as e:
+                    print(f"Cleanup error: {e}")
             else:
-                print("No videos found.")
-
+                print("No videos to process, waiting...")
+                time.sleep(5)
         except Exception as e:
-            print(f"Error monitoring folder: {e}")
+            print(f"Error in main processing loop: {e}")
+            time.sleep(5)
 
-        time.sleep(5)  # Wait 5 seconds before checking again
-
-def start_monitoring():
-    """ Start the folder monitoring in a background thread. """
-    monitor_thread = threading.Thread(target=monitor_folder, daemon=True)
+def detect_litter():
+    """Start the litter detection system"""
+    print("Starting TrashCam litter detection system...")
+    
+    if not MODEL_PATH.exists():
+        print(f"ERROR: Model not found at {MODEL_PATH}")
+        return
+    
+    print(f"TO_PROCESS_DIR: {TO_PROCESS_DIR} (exists: {TO_PROCESS_DIR.exists()})")
+    print(f"PROCESSED_DIR: {PROCESSED_DIR} (exists: {PROCESSED_DIR.exists()})")
+    
+    monitor_thread = threading.Thread(target=main_loop, daemon=True)
     monitor_thread.start()
+    print("Processing thread started, monitoring for new videos...")
+    
+    try:
+        while True:
+            time.sleep(60)
+    except KeyboardInterrupt:
+        print("Shutting down TrashCam system...")
+
