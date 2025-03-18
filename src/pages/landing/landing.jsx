@@ -23,169 +23,186 @@ import FinesMain from "../../assests/vectors/FinesMain.svg";
 import NewIncidentsMain from "../../assests/vectors/NewIncidentsMain.svg";
 import TotalReportsMain from "../../assests/vectors/TotalReportsMain.svg";
 import LitterStatsMain from "../../assests/vectors/LitterStatsMain.svg";
-import { BorderColor } from "@mui/icons-material";
 
 const MainSection = () => {
-  return (
-    <div 
-      style={{ 
-        width: "100vw",
-        minHeight: "100vh",
-        background: "linear-gradient(60deg, #009370 0%, #009370 33.33%, #006A53 66.66%, #009370 100%)",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        padding: "20px",
-        boxSizing: "border-box",
-        position: "relative",
-        fontFamily: "'Onest', sans-serif",
-      }}
-    >
-      {/* Content Container */}
-      <div 
-        style={{
-          position: "relative",
-          zIndex: 10,
-          textAlign: "center",
-          color: "white",
-          maxWidth: "90%",
-          padding: "20px",
-          marginTop: "5vh"
-        }}
-      >
-        <h1 
-          style={{
-            fontSize: "4rem",
-            fontWeight: "700",
-            marginBottom: "0.5rem",
-            lineHeight: "1.1"
-          }}
-        >
-          Track Your Litter
-        </h1>
-        <h2
-          style={{
-            fontSize: "4rem",
-            fontWeight: "700",
-            marginTop: "0",
-            marginBottom: "2rem",
-            lineHeight: "1.1"
-          }}
-        >
-          Keep Your City Clean
-        </h2>
-        <p
-          style={{
-            fontSize: "1.5rem",
-            marginBottom: "3rem",
-            maxWidth: "80%",
-            margin: "0 auto 3rem",
-            lineHeight: "1.6"
-          }}
-        >
-          Detect litter in your area with TrashCam's AI-powered technology, using real-time
-          computer vision and IoT to promote cleaner, safer spaces.
-        </p>
-      </div>
+        return (
+          <div 
+            style={{ 
+              width: "100vw",
+              minHeight: "105vh",
+              background: "linear-gradient(60deg, #009370 0%, #009370 33.33%, #006A53 66.66%, #009370 100%)",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              padding: "20px",
+              boxSizing: "border-box",
+              position: "relative",
+              fontFamily: "'Onest', sans-serif",
+            }}
+          >
+            {/* Content Container */}
+            <div 
+              style={{
+                position: "relative",
+                zIndex: 10,
+                textAlign: "center",
+                color: "white",
+                maxWidth: "90%",
+                padding: "20px",
+                marginTop: "2vh"
+              }}
+            >
+              <h1 
+                style={{
+                  fontSize: "4rem",
+                  fontWeight: "700",
+                  marginBottom: "0.5rem",
+                  lineHeight: "1.1"
+                }}
+              >
+                Track Your Litter
+              </h1>
+              <h2
+                style={{
+                  fontSize: "4rem",
+                  fontWeight: "700",
+                  marginTop: "0",
+                  marginBottom: "2rem",
+                  lineHeight: "1.1"
+                }}
+              >
+                Keep Your City Clean
+              </h2>
+              <p
+                style={{
+                  fontSize: "1.5rem",
+                  marginBottom: "3rem",
+                  maxWidth: "80%",
+                  margin: "0 auto 3rem",
+                  lineHeight: "1.6"
+                }}
+              >
+                If you can't do the Fine don't do the Crime!
+              </p>
+            </div>
+            
+            {/* TotalReportsMain SVG in bottom left */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "0px",
+                left: "100px",
+                zIndex: 20,
+                width: "500px", // Increased size
+                height: "auto"
+              }}
+            >
+              <img 
+                src={TotalReportsMain} 
+                alt="Total Reports" 
+                style={{
+                  width: "100%",
+                  height: "auto"
+                }}
+              />
+            </div>
       
-      {/* TotalReportsMain SVG in bottom left */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "40px",
-          left: "40px",
-          zIndex: 20,
-          width: "400px", // Increased size
-          height: "auto"
-        }}
-      >
-        <img 
-          src={TotalReportsMain} 
-          alt="Total Reports" 
-          style={{
-            width: "100%",
-            height: "auto"
-          }}
-        />
-      </div>
-
-      {/* FinesMain SVG positioned to the right */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "40px",
-          left: "480px", // Adjusted positioning
-          zIndex: 19,
-          width: "400px", // Increased size
-          height: "auto"
-        }}
-      >
-        <img 
-          src={FinesMain} 
-          alt="Fines" 
-          style={{
-            width: "100%",
-            height: "auto"
-          }}
-        />
-      </div>
-
-      {/* NewIncidentsMain SVG positioned above FinesMain */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "200px",
-          left: "480px", // Adjusted positioning
-          zIndex: 20,
-          width: "400px", // Increased size
-          height: "auto"
-        }}
-      >
-        <img 
-          src={NewIncidentsMain} 
-          alt="New Incidents" 
-          style={{
-            width: "100%",
-            height: "auto"
-          }}
-        />
-      </div>
-
-      {/* LitterStatsMain SVG on far right */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "40px",
-          right: "40px",
-          zIndex: 20,
-          width: "400px", // Increased size
-          height: "auto"
-        }}
-      >
-        <img 
-          src={LitterStatsMain} 
-          alt="Litter Stats" 
-          style={{
-            width: "100%",
-            height: "auto"
-          }}
-        />
-      </div>
+            {/* FinesMain SVG positioned to the right */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "100px",
+                left: "650px", // Adjusted positioning
+                zIndex: 19,
+                width: "500px", // Increased size
+                height: "auto"
+              }}
+            >
+              <img 
+                src={FinesMain} 
+                alt="Fines" 
+                style={{
+                  width: "100%",
+                  height: "auto"
+                }}
+              />
+            </div>
       
-      {/* White Wave Overlay */}
-      <svg 
-        style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100vh" }} 
-        viewBox="0 0 1440 100"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path 
-          fill="#FFFFFF" 
-          d="M0,400 C180,350 360,250 540,250 C720,250 900,350 1080,350 C1260,350 1440,250 1440,250 L1440,500 L0,500 Z"
-        />
-      </svg>
-    </div>
-  );
-};
+            {/* NewIncidentsMain SVG positioned above FinesMain */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "380px",
+                left: "650px", // Adjusted positioning
+                zIndex: 20,
+                width: "500px", // Increased size
+                height: "auto"
+              }}
+            >
+              <img 
+                src={NewIncidentsMain} 
+                alt="New Incidents" 
+                style={{
+                  width: "100%",
+                  height: "auto"
+                }}
+              />
+            </div>
+      
+            {/* LitterStatsMain SVG on far right */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "20px",
+                right: "15px",
+                zIndex: 20,
+                width: "550px", // Increased size
+                height: "auto"
+              }}
+            >
+              <img 
+                src={LitterStatsMain} 
+                alt="Litter Stats" 
+                style={{
+                  width: "100%",
+                  borderRadius: "30px",
+                  height: "auto"
+                }}
+              />
+            </div>
+            
+            {/* White Wave Overlay */}
+            <svg 
+              style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100vh" }} 
+              viewBox="0 0 1440 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                fill="#FFFFFF" 
+                d="M0,400 C180,350 360,250 540,250 C720,250 900,350 1080,350 C1260,350 1440,250 1440,250 L1440,500 L0,500 Z"
+              />
+            </svg>
+          </div>
+        );
+      };
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const TechIconsSection = () => {
   const techSectionStyle = {
@@ -959,7 +976,7 @@ const NavigationBar = () => {
           display: "flex",
           alignItems: "center",
           padding: "0.1rem 5%", // Reduced vertical padding
-          background: "linear-gradient(60deg, #009370 0%, #009370 17.33%, #006A53 59.66%, #009370 100%)",
+          background: "linear-gradient(60deg, #009370 0%, #009370 15.33%, #006A53 57.66%, #009370 100%)",
           zIndex: 1000,
           fontFamily: "'Onest', sans-serif",
           height: "60px", // Explicit height control
