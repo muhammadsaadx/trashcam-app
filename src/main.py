@@ -7,7 +7,7 @@ from apis.offenders.router import router as offenders_router
 from apis.detect.detect import router as detect_router
 
 # Import folder monitoring from litter.py
-from litter.litter import detect_litter
+from litter.litter import start_detection_system
 
 app = FastAPI()
 
@@ -27,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Directory where videos will be saved
-#detect_litter()
-
+@app.on_event("startup")
+async def startup_event():
+    """Start the video detection system on application startup"""
+    start_detection_system()

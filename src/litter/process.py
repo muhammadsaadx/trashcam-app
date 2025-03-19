@@ -5,7 +5,6 @@ from pathlib import Path
 from utils.sort.sort import Sort
 
 def calculate_iou(box1, box2):
-    """Calculate Intersection over Union (IoU) between two bounding boxes."""
     x1_inter = max(box1[0], box2[0])
     y1_inter = max(box1[1], box2[1])
     x2_inter = min(box1[2], box2[2])
@@ -20,7 +19,6 @@ def calculate_iou(box1, box2):
     return intersection_area / union_area if union_area > 0 else 0.0
 
 def process_video(video_path, model, processed_dir):
-    """Process a video with YOLOv12x object detection and tracking."""
     try:
         cap = cv2.VideoCapture(str(video_path))
         if not cap.isOpened():
@@ -50,7 +48,7 @@ def process_video(video_path, model, processed_dir):
             results = model.predict(
                 frame,
                 imgsz=640,
-                conf=0.1,
+                conf=0.45,
                 iou=0.45,
                 augment=False,
                 half=False,
