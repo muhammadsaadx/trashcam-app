@@ -7,7 +7,7 @@ from apis.offenders.router import router as offenders_router
 from apis.detect.detect import router as detect_router
 
 # Import folder monitoring from litter.py
-from litter.litter import start_detection_system
+from detect.video import start_detection_system
 
 app = FastAPI()
 

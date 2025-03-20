@@ -2,7 +2,12 @@ import cv2
 import numpy as np
 import uuid
 from pathlib import Path
+import json
 from utils.sort.sort import Sort
+import pandas as pd
+from datetime import datetime
+import json
+
 
 def calculate_iou(box1, box2):
     x1_inter = max(box1[0], box2[0])
@@ -34,8 +39,12 @@ def process_video(video_path, model, processed_dir):
         out = cv2.VideoWriter(str(output_path), fourcc, int(fps), (width, height))
 
         mot_tracker = Sort(max_age=5, min_hits=2, iou_threshold=0.3)
-        track_history = {}
-        class_history = {}
+        
+        # Enhanced history tracking
+        track_history = {}  # Track ID -> list of positions per frame
+        class_history = {}  # Track ID -> class ID history
+        frame_positions = {} # Track ID -> frames where it appeared
+        
         frame_count = 0
 
         while cap.isOpened():
@@ -89,10 +98,35 @@ def process_video(video_path, model, processed_dir):
                     if track_id == -1:
                         track_id = obj_id
                 else:
-                    cls_id = class_history.get(obj_id, -1)
+                    cls_id = class_history.get(obj_id, {}).get('last_class', -1)
 
-                track_history[obj_id] = (x1, y1, x2, y2)
-                class_history[obj_id] = cls_id
+                # Initialize history entries if this is a new track
+                if obj_id not in track_history:
+                    track_history[obj_id] = []
+                    class_history[obj_id] = {
+                        'classes': {},
+                        'last_class': cls_id
+                    }
+                    frame_positions[obj_id] = []
+                
+                # Update position history
+                track_history[obj_id].append({
+                    'frame': frame_count,
+                    'x1': x1, 
+                    'y1': y1, 
+                    'x2': x2, 
+                    'y2': y2,
+                    'center_x': (x1 + x2) // 2,
+                    'center_y': (y1 + y2) // 2
+                })
+                
+                # Update class history
+                class_history[obj_id]['last_class'] = cls_id
+                class_history[obj_id]['classes'][cls_id] = class_history[obj_id]['classes'].get(cls_id, 0) + 1
+                
+                # Record frame appearance
+                frame_positions[obj_id].append(frame_count)
+                
                 current_tracks[obj_id] = cls_id
 
                 class_name = model.names.get(cls_id, 'Unknown')
@@ -110,11 +144,12 @@ def process_video(video_path, model, processed_dir):
         out.release()
 
         print(f"\nProcessed video: {video_path.name}")
-        print("Tracked objects:")
-        for track_id, cls_id in class_history.items():
-            class_name = model.names.get(cls_id, 'Unknown')
-            print(f"  Track ID {track_id}: {class_name}")
-
+        
+        # Generate tracking report
+        
+        # Save tracking data
+        save_tracking_data(track_history, class_history, frame_positions, model.names, video_path)
+        
         return output_path
     
     except Exception as e:
@@ -124,3 +159,40 @@ def process_video(video_path, model, processed_dir):
         if 'out' in locals() and out is not None:
             out.release()
         return None
+
+
+
+
+def save_tracking_data(track_history, class_history, frame_positions, class_names, video_path):
+    # Create JSON data
+    tracking_data = []
+    seen_entries = set()  # To track unique (track_id, center_x, center_y)
+
+    for obj_id in track_history:
+        # Get most frequent class
+        class_counts = class_history[obj_id]['classes']
+        most_common_class = max(class_counts.items(), key=lambda x: x[1]) if class_counts else (-1, 0)
+        class_id, count = most_common_class
+        class_name = class_names.get(class_id, "Unknown")
+        
+        # Add each position to the dataset if not duplicate
+        for pos in track_history[obj_id]:
+            entry_key = (obj_id, pos['center_x'], pos['center_y'])
+            if entry_key not in seen_entries:
+                tracking_data.append({
+                    'track_id': obj_id,
+                    'frame': pos['frame'],
+                    'center_x': pos['center_x'],
+                    'center_y': pos['center_y'],
+                    'class_name': class_name
+                })
+                seen_entries.add(entry_key)  # Mark as seen
+
+    if tracking_data:
+        json_path = Path.cwd() / "temp" / f"litter.json"
+        json_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure folder exists
+
+        with open(json_path, 'w') as json_file:
+            json.dump(tracking_data, json_file, indent=4)
+        
+        print(f"Tracking data saved to {json_path}")

@@ -6,13 +6,13 @@ import tempfile
 from pathlib import Path
 from bs4 import BeautifulSoup
 from ultralytics import YOLO
-from .process import process_video  # Assuming process_video is in this module
+from .detect_litter import process_video  
 
 # Configuration
 AWS_URL = os.getenv("AWS_URL")
 MODEL_PATH = Path("D:/TrashCamApp/trashcam-backend/weights/yolo12x_10epochsFull_40epochs5th.pt")
 
-model = None  # Initialize model lazily to avoid loading at import time
+model = None  
 
 def get_video_list():
     """Fetch list of videos from the to_process folder in AWS bucket"""

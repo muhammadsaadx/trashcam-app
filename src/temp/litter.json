@@ -1,0 +1,79 @@
+[
+    {
+        "track_id": 2,
+        "frame": 1,
+        "center_x": 16,
+        "center_y": 509,
+        "class_name": "plastic bag"
+    },
+    {
+        "track_id": 2,
+        "frame": 43,
+        "center_x": 15,
+        "center_y": 508,
+        "class_name": "plastic bag"
+    },
+    {
+        "track_id": 1,
+        "frame": 1,
+        "center_x": 290,
+        "center_y": 544,
+        "class_name": "litter"
+    },
+    {
+        "track_id": 1,
+        "frame": 30,
+        "center_x": 290,
+        "center_y": 543,
+        "class_name": "litter"
+    },
+    {
+        "track_id": 1,
+        "frame": 34,
+        "center_x": 289,
+        "center_y": 543,
+        "class_name": "litter"
+    },
+    {
+        "track_id": 4,
+        "frame": 38,
+        "center_x": 658,
+        "center_y": 418,
+        "class_name": "cup"
+    },
+    {
+        "track_id": 4,
+        "frame": 39,
+        "center_x": 658,
+        "center_y": 420,
+        "class_name": "cup"
+    },
+    {
+        "track_id": 4,
+        "frame": 40,
+        "center_x": 659,
+        "center_y": 421,
+        "class_name": "cup"
+    },
+    {
+        "track_id": 4,
+        "frame": 41,
+        "center_x": 659,
+        "center_y": 422,
+        "class_name": "cup"
+    },
+    {
+        "track_id": 4,
+        "frame": 42,
+        "center_x": 658,
+        "center_y": 422,
+        "class_name": "cup"
+    },
+    {
+        "track_id": 4,
+        "frame": 43,
+        "center_x": 659,
+        "center_y": 423,
+        "class_name": "cup"
+    }
+]
