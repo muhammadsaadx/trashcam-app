@@ -4,10 +4,6 @@ import uuid
 from pathlib import Path
 import json
 from utils.sort.sort import Sort
-import pandas as pd
-from datetime import datetime
-import json
-
 
 def calculate_iou(box1, box2):
     x1_inter = max(box1[0], box2[0])
@@ -23,28 +19,55 @@ def calculate_iou(box1, box2):
     
     return intersection_area / union_area if union_area > 0 else 0.0
 
-def process_video(video_path, model, processed_dir):
+def save_tracking_data(track_history, class_history, frame_positions, class_names, json_path):
+    tracking_data = []
+
+    for obj_id in track_history:
+        class_counts = class_history[obj_id]['classes']
+        most_common_class = max(class_counts.items(), key=lambda x: x[1]) if class_counts else (-1, 0)
+        class_id, count = most_common_class
+        
+        # Handle class names properly whether it's list or dict
+        if isinstance(class_names, dict):
+            class_name = class_names.get(class_id, "Unknown")
+        else:
+            class_name = "Unknown"
+            if class_id != -1 and 0 <= class_id < len(class_names):
+                class_name = class_names[class_id]
+        
+        for pos in track_history[obj_id]:
+            tracking_data.append({
+                'track_id': obj_id,
+                'frame': pos['frame'],
+                'x1': pos['x1'],
+                'y1': pos['y1'],
+                'x2': pos['x2'],
+                'y2': pos['y2'],
+                'center_x': pos['center_x'],
+                'center_y': pos['center_y'],
+                'class_name': class_name
+            })
+
+    if tracking_data:
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(json_path, 'w') as json_file:
+            json.dump(tracking_data, json_file, indent=4)
+        print(f"Tracking data saved to {json_path}")
+        return True
+    else:
+        print("No tracking data to save.")
+        return False
+
+def process_litter(video_path, model, processed_dir):
     try:
         cap = cv2.VideoCapture(str(video_path))
         if not cap.isOpened():
             print(f"Error: Cannot open video {video_path}")
             return None
 
-        output_filename = f"{uuid.uuid4()}.mp4"
-        output_path = processed_dir / output_filename
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        fps = cap.get(cv2.CAP_PROP_FPS) or 30
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        out = cv2.VideoWriter(str(output_path), fourcc, int(fps), (width, height))
-
         mot_tracker = Sort(max_age=5, min_hits=2, iou_threshold=0.3)
-        
-        # Enhanced history tracking
-        track_history = {}  # Track ID -> list of positions per frame
-        class_history = {}  # Track ID -> class ID history
-        frame_positions = {} # Track ID -> frames where it appeared
-        
+        track_history = {}
+        class_history = {}
         frame_count = 0
 
         while cap.isOpened():
@@ -63,7 +86,7 @@ def process_video(video_path, model, processed_dir):
                 half=False,
                 device='cpu',
                 max_det=100,
-                verbose=True
+                verbose=False
             )[0]
 
             detections = []
@@ -72,44 +95,26 @@ def process_video(video_path, model, processed_dir):
                     x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
                     conf = box.conf.item()
                     cls_id = int(box.cls.item())
-                    track_id = int(box.id.item()) if hasattr(box, 'id') and box.id is not None else -1
-                    detections.append([x1, y1, x2, y2, conf, cls_id, track_id])
+                    detections.append([x1, y1, x2, y2, conf, cls_id])
 
-            sort_input = np.array([[x1, y1, x2, y2, conf] for x1, y1, x2, y2, conf, _, _ in detections])
-            
-            if len(sort_input) > 0:
-                tracked_objects = mot_tracker.update(sort_input)
-            else:
-                tracked_objects = np.empty((0, 5))
+            sort_input = np.array([[x1, y1, x2, y2, conf] for x1, y1, x2, y2, conf, _ in detections])
+            tracked_objects = mot_tracker.update(sort_input) if len(sort_input) > 0 else np.empty((0, 5))
 
-            current_tracks = {}
             for obj in tracked_objects:
                 x1, y1, x2, y2, obj_id = map(int, obj)
                 best_match = (-1, 0.0)
                 
-                for idx, (dx1, dy1, dx2, dy2, _, cls_id, _) in enumerate(detections):
+                for idx, (dx1, dy1, dx2, dy2, _, cls_id) in enumerate(detections):
                     iou = calculate_iou([x1, y1, x2, y2], [dx1, dy1, dx2, dy2])
                     if iou > best_match[1]:
                         best_match = (idx, iou)
 
-                if best_match[1] > 0.5:
-                    cls_id = detections[best_match[0]][5]
-                    track_id = detections[best_match[0]][6]
-                    if track_id == -1:
-                        track_id = obj_id
-                else:
-                    cls_id = class_history.get(obj_id, {}).get('last_class', -1)
+                cls_id = detections[best_match[0]][5] if best_match[1] > 0.5 else -1
 
-                # Initialize history entries if this is a new track
                 if obj_id not in track_history:
                     track_history[obj_id] = []
-                    class_history[obj_id] = {
-                        'classes': {},
-                        'last_class': cls_id
-                    }
-                    frame_positions[obj_id] = []
+                    class_history[obj_id] = {'classes': {}, 'last_class': cls_id}
                 
-                # Update position history
                 track_history[obj_id].append({
                     'frame': frame_count,
                     'x1': x1, 
@@ -120,79 +125,27 @@ def process_video(video_path, model, processed_dir):
                     'center_y': (y1 + y2) // 2
                 })
                 
-                # Update class history
                 class_history[obj_id]['last_class'] = cls_id
                 class_history[obj_id]['classes'][cls_id] = class_history[obj_id]['classes'].get(cls_id, 0) + 1
-                
-                # Record frame appearance
-                frame_positions[obj_id].append(frame_count)
-                
-                current_tracks[obj_id] = cls_id
 
-                class_name = model.names.get(cls_id, 'Unknown')
-                label = f"{class_name} {obj_id}"
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, label, (x1, y1 - 10), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-            out.write(frame)
-            
             if frame_count % 100 == 0:
                 print(f"Processed {frame_count} frames from {video_path.name}")
 
         cap.release()
-        out.release()
 
-        print(f"\nProcessed video: {video_path.name}")
-        
-        # Generate tracking report
-        
-        # Save tracking data
-        save_tracking_data(track_history, class_history, frame_positions, model.names, video_path)
-        
-        return output_path
+
+
+
+        json_path = Path.cwd() / "temp" / "litter.json"
+
+
+
+        if save_tracking_data(track_history, class_history, {}, model.names, json_path):
+            return json_path
+        return None
     
     except Exception as e:
         print(f"Error processing video {video_path}: {str(e)}")
-        if 'cap' in locals() and cap is not None:
+        if 'cap' in locals() and cap.isOpened():
             cap.release()
-        if 'out' in locals() and out is not None:
-            out.release()
         return None
-
-
-
-
-def save_tracking_data(track_history, class_history, frame_positions, class_names, video_path):
-    # Create JSON data
-    tracking_data = []
-    seen_entries = set()  # To track unique (track_id, center_x, center_y)
-
-    for obj_id in track_history:
-        # Get most frequent class
-        class_counts = class_history[obj_id]['classes']
-        most_common_class = max(class_counts.items(), key=lambda x: x[1]) if class_counts else (-1, 0)
-        class_id, count = most_common_class
-        class_name = class_names.get(class_id, "Unknown")
-        
-        # Add each position to the dataset if not duplicate
-        for pos in track_history[obj_id]:
-            entry_key = (obj_id, pos['center_x'], pos['center_y'])
-            if entry_key not in seen_entries:
-                tracking_data.append({
-                    'track_id': obj_id,
-                    'frame': pos['frame'],
-                    'center_x': pos['center_x'],
-                    'center_y': pos['center_y'],
-                    'class_name': class_name
-                })
-                seen_entries.add(entry_key)  # Mark as seen
-
-    if tracking_data:
-        json_path = Path.cwd() / "temp" / f"litter.json"
-        json_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure folder exists
-
-        with open(json_path, 'w') as json_file:
-            json.dump(tracking_data, json_file, indent=4)
-        
-        print(f"Tracking data saved to {json_path}")
