@@ -19,6 +19,7 @@ def calculate_iou(box1, box2):
     
     return intersection_area / union_area if union_area > 0 else 0.0
 
+
 def save_tracking_data(track_history, class_history, frame_positions, class_names, json_path):
     tracking_data = []
 
@@ -48,15 +49,16 @@ def save_tracking_data(track_history, class_history, frame_positions, class_name
                 'class_name': class_name
             })
 
-    if tracking_data:
-        json_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(json_path, 'w') as json_file:
-            json.dump(tracking_data, json_file, indent=4)
-        print(f"Tracking data saved to {json_path}")
-        return True
-    else:
-        print("No tracking data to save.")
-        return False
+    # Ensure the directory exists
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Write tracking data (empty list if no data)
+    with open(json_path, 'w') as json_file:
+        json.dump(tracking_data, json_file, indent=4)
+    
+    print(f"Tracking data saved to {json_path} ({'contains data' if tracking_data else 'empty file'})")
+    return bool(tracking_data)
+
 
 def process_litter(video_path, model, processed_dir):
     try:

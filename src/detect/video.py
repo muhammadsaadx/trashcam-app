@@ -13,12 +13,101 @@ from .detect_number_plate import process_number_plate
 
 # Configuration
 AWS_URL = os.getenv("AWS_URL")
-MODEL_PATH = Path("D:/TrashCamApp/trashcam-backend/weights/yolo12x_10epochsFull_40epochs5th.pt")
-NUMBER_PLATE_MODEL = Path("D:/TrashCamApp/trashcam-backend/weights/license_plate_detector.pt")
+
+MODEL_PATH = Path(os.getenv("LITTER_MODEL_PATH"))
+NUMBER_PLATE_MODEL = Path(os.getenv("NUMBER_PLATE_MODEL_PATH"))
 
 # Global variables
 model = None
 detection_thread = None
+
+
+
+def generate_processed_video(original_video_path, litter_json_path, plate_json_path, output_dir):
+    try:
+        frame_data = {}
+        
+        # Load litter tracking data if available and non-empty
+        if litter_json_path and litter_json_path.exists():
+            with open(litter_json_path, 'r') as f:
+                litter_tracking_data = json.load(f)
+            if litter_tracking_data:
+                for entry in litter_tracking_data:
+                    frame = entry['frame']
+                    if frame not in frame_data:
+                        frame_data[frame] = {'litter': [], 'plates': []}
+                    frame_data[frame]['litter'].append(entry)
+        
+        # Load license plate tracking data if available and non-empty
+        if plate_json_path and plate_json_path.exists():
+            with open(plate_json_path, 'r') as f:
+                plate_tracking_data = json.load(f)
+            if plate_tracking_data:
+                for entry in plate_tracking_data:
+                    frame = entry['frame']
+                    if frame not in frame_data:
+                        frame_data[frame] = {'litter': [], 'plates': []}
+                    frame_data[frame]['plates'].append(entry)
+        
+        if not frame_data:
+            return None
+        
+        cap = cv2.VideoCapture(str(original_video_path))
+        if not cap.isOpened():
+            return None
+        
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        
+        output_filename = f"processed_{original_video_path.stem}.mp4"
+        output_path = output_dir / output_filename
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(str(output_path), fourcc, fps, (width, height))
+        
+        frame_count = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            frame_count += 1
+            current_frame_data = frame_data.get(frame_count, {'litter': [], 'plates': []})
+            
+            # Draw litter detections
+            for entry in current_frame_data['litter']:
+                x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
+                track_id = entry['track_id']
+                class_name = entry['class_name']
+                
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                label = f"{class_name} {track_id}"
+                cv2.putText(frame, label, (x1, y1 - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            
+            # Draw license plate detections
+            for entry in current_frame_data['plates']:
+                x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
+                track_id = entry['track_id']
+                ocr_text = entry.get('ocr_text', 'Unknown')
+                
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                label = f"Plate {track_id}: {ocr_text}"
+                cv2.putText(frame, label, (x1, y1 - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            
+            out.write(frame)
+
+        cap.release()
+        out.release()
+        return output_path
+        
+    except Exception as e:
+        print(f"Error generating processed video: {e}")
+        return None
+
+
+
 
 def get_video_list():
     try:
@@ -57,103 +146,11 @@ def upload_to_aws(file_path, target_key):
         print(f"Error uploading {target_key}: {e}")
         return False
 
-
-def generate_processed_video(original_video_path, litter_json_path, plate_json_path, output_dir):
-    try:
-        # Initialize frame data dictionary
-        frame_data = {}
-        
-        # Load litter tracking data if available
-        if litter_json_path and Path(litter_json_path).exists():
-            with open(litter_json_path, 'r') as f:
-                litter_tracking_data = json.load(f)
-            
-            # Organize litter data by frame
-            for entry in litter_tracking_data:
-                frame = entry['frame']
-                if frame not in frame_data:
-                    frame_data[frame] = {'litter': [], 'plates': []}
-                frame_data[frame]['litter'].append(entry)
-        
-        # Load license plate tracking data if available
-        if plate_json_path and Path(plate_json_path).exists():
-            with open(plate_json_path, 'r') as f:
-                plate_tracking_data = json.load(f)
-            
-            # Organize plate data by frame
-            for entry in plate_tracking_data:
-                frame = entry['frame']
-                if frame not in frame_data:
-                    frame_data[frame] = {'litter': [], 'plates': []}
-                frame_data[frame]['plates'].append(entry)
-        
-        # If no tracking data was loaded, return None
-        if not frame_data:
-            print("No tracking data available")
-            return None
-        
-        # Open video capture
-        cap = cv2.VideoCapture(str(original_video_path))
-        if not cap.isOpened():
-            return None
-        
-        # Get video properties
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        
-        # Set up output video writer
-        output_filename = f"processed_{original_video_path.stem}.mp4"
-        output_path = output_dir / output_filename
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(str(output_path), fourcc, fps, (width, height))
-        
-        # Process each frame
-        frame_count = 0
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-            
-            frame_count += 1
-            current_frame_data = frame_data.get(frame_count, {'litter': [], 'plates': []})
-            
-            # Draw litter detections
-            for entry in current_frame_data['litter']:
-                x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
-                track_id = entry['track_id']
-                class_name = entry['class_name']
-                
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                label = f"{class_name} {track_id}"
-                cv2.putText(frame, label, (x1, y1 - 10), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-            
-            # Draw license plate detections
-            for entry in current_frame_data['plates']:
-                x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
-                track_id = entry['track_id']
-                ocr_text = entry.get('ocr_text', 'Unknown')
-                
-                # Use a different color for license plates (blue)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                label = f"Plate {track_id}: {ocr_text}"
-                cv2.putText(frame, label, (x1, y1 - 10), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-            
-            out.write(frame)
-
-        cap.release()
-        out.release()
-        return output_path
-        
-    except Exception as e:
-        print(f"Error generating processed video: {e}")
-        return None
-    
-
-    
 def download_and_process_video():
+    global number_plate_model, trocr_processor, trocr_model
+    # ... existing code ...
+    
+    
     videos = get_video_list()
     if not videos:
         return False
@@ -175,47 +172,49 @@ def download_and_process_video():
         with tempfile.TemporaryDirectory() as temp_processed_dir:
             processed_dir = Path(temp_processed_dir)
             
-            # Process litter detection
+            # Process detections
+            #######################################################################################
+        
             litter_json_path = process_litter(temp_path, model, processed_dir)
+            plate_json_path = process_number_plate(
+                temp_path, 
+                number_plate_model, 
+                processed_dir,
+                trocr_processor,
+                trocr_model
+            )
+            #######################################################################################
             
-            # Initialize number plate model if not defined at module level
-            number_plate_model = YOLO(str(NUMBER_PLATE_MODEL))
-            
-            # Process number plate detection
-            plate_json_path = process_number_plate(temp_path, number_plate_model, processed_dir)
-            
-            if not litter_json_path or not litter_json_path.exists():
-                print("⚠️ No litter tracking data generated")
-                
-            if not plate_json_path or not plate_json_path.exists():
-                print("⚠️ No license plate tracking data generated")
-                
-            # Continue with video processing if at least one type of detection worked
-            if (litter_json_path and litter_json_path.exists()):
-                processed_video_path = generate_processed_video(temp_path, litter_json_path, plate_json_path, processed_dir)
-                
-                if not processed_video_path or not processed_video_path.exists():
-                    return False
 
-                video_target = f"processed/{processed_video_path.name}"
-                json_target = f"processed/{litter_json_path.name}"
-                plate_json_target = f"processed/numberplates.json" if plate_json_path else None
-                
-                # Upload processed files
-                upload_success = upload_to_aws(processed_video_path, video_target)
-                if litter_json_path and litter_json_path.exists():
-                    upload_success &= upload_to_aws(litter_json_path, json_target)
-                if plate_json_path and plate_json_path.exists():
-                    upload_success &= upload_to_aws(plate_json_path, plate_json_target)
 
-                if upload_success:
-                    delete_video_from_bucket(video_key)
-                    print("✅ Successfully processed and uploaded video")
-                else:
-                    print("⚠️ Partial upload completed")
-            else:
-                print("❌ No detection data available for video processing")
+            # Generate Video
+            ########################################################################################
+            processed_video_path = generate_processed_video(
+                temp_path, 
+                litter_json_path, 
+                plate_json_path, 
+                processed_dir
+            )
+            ########################################################################################
+
+
+            if not processed_video_path or not processed_video_path.exists():
+                print("NOTHING DETECTED")
+                delete_video_from_bucket(video_key)
+                temp_path.unlink(missing_ok=True)
                 return False
+
+            #########################################################################################
+            video_target = f"processed/{processed_video_path.name}"
+            upload_success = upload_to_aws(processed_video_path, video_target)
+            #######################################################################################
+
+
+            if upload_success:
+                delete_video_from_bucket(video_key)
+                print("✅ Successfully processed and uploaded video")
+            else:
+                print("⚠️ Partial upload completed")
 
         temp_path.unlink(missing_ok=True)
         return True
@@ -224,20 +223,58 @@ def download_and_process_video():
         print(f"❌ Error processing video: {e}")
         return False
 
+# Add new global variables
+number_plate_model = None
+trocr_processor = None
+trocr_model = None
 
 def main_loop():
-    global model
+    global model, number_plate_model, trocr_processor, trocr_model
+    # Setup environment once
+    from .detect_number_plate import setup_environment
+    setup_environment()
+
     if model is None:
+        # Load litter detection model
         if not MODEL_PATH.exists():
-            print(f"❌ Model not found at {MODEL_PATH}")
+            print(f"❌ Litter model not found at {MODEL_PATH}")
             return
         try:
             model = YOLO(str(MODEL_PATH))
-            print("✅ YOLO model loaded")
+            print("✅ Litter detection model loaded")
         except Exception as e:
-            print(f"❌ Failed to load model: {e}")
+            print(f"❌ Failed to load litter model: {e}")
             return
-    
+
+    if number_plate_model is None:
+        # Load number plate detection model
+        if not NUMBER_PLATE_MODEL.exists():
+            print(f"❌ Number plate model not found at {NUMBER_PLATE_MODEL}")
+            return
+        try:
+            number_plate_model = YOLO(str(NUMBER_PLATE_MODEL))
+            print("✅ Number plate detection model loaded")
+        except Exception as e:
+            print(f"❌ Failed to load number plate model: {e}")
+            return
+
+    if trocr_processor is None or trocr_model is None:
+        # Load TrOCR models
+        try:
+            from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+            trocr_processor = TrOCRProcessor.from_pretrained(
+                'microsoft/trocr-base-printed', 
+                cache_dir=os.environ.get("MODEL_CACHE", ".ocr_model")
+            )
+            trocr_model = VisionEncoderDecoderModel.from_pretrained(
+                'microsoft/trocr-base-printed',
+                cache_dir=os.environ.get("MODEL_CACHE", ".ocr_model")
+            )
+            print("✅ TrOCR models loaded")
+        except Exception as e:
+            print(f"❌ Failed to load TrOCR models: {e}")
+            return
+
     while True:
         try:
             if not download_and_process_video():
@@ -246,6 +283,8 @@ def main_loop():
         except Exception as e:
             print(f"⚠️ Unexpected error: {e}")
             time.sleep(5)
+    
+    # ... rest of existing code ...
 
 def start_detection_system():
     global detection_thread
@@ -258,4 +297,3 @@ def start_detection_system():
     detection_thread = threading.Thread(target=main_loop, daemon=True)
     detection_thread.start()
     print("📡 Background processing started")
-

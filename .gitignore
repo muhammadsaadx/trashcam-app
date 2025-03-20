@@ -57,3 +57,5 @@ docker-compose.override.yml
 
 
 *.model/
+
+*ocr_model/

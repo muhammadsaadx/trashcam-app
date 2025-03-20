@@ -29,5 +29,4 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    """Start the video detection system on application startup"""
     start_detection_system()

@@ -59,18 +59,13 @@ def save_tracking_data(track_history, ocr_history, frame_positions, json_path):
         print("No tracking data to save.")
         return False
 
-def process_number_plate(video_path, model, processed_dir):
+def process_number_plate(video_path, model, processed_dir, trocr_processor=None, trocr_model=None):
     try:
-        # Initialize OCR models
-        trocr_processor = TrOCRProcessor.from_pretrained(
-            'microsoft/trocr-base-printed', 
-            cache_dir=os.environ.get("MODEL_CACHE", ".model")
-        )
-        trocr_model = VisionEncoderDecoderModel.from_pretrained(
-            'microsoft/trocr-base-printed',
-            cache_dir=os.environ.get("MODEL_CACHE", ".model")
-        )
         
+        if not trocr_processor or not trocr_model:
+            raise ValueError("TrOCR models not provided")
+        
+
         # Initialize video capture
         cap = cv2.VideoCapture(str(video_path))
         if not cap.isOpened():
@@ -187,6 +182,6 @@ def process_number_plate(video_path, model, processed_dir):
 
 # Environment setup function - can be called separately if needed
 def setup_environment():
-    os.makedirs(".model", exist_ok=True)
-    os.environ["MODEL_CACHE"] = ".model"
+    os.makedirs(".ocr_model", exist_ok=True)
+    os.environ["MODEL_CACHE"] = ".ocr_model"
     os.environ['TOKENIZERS_PARALLELISM'] = 'false'
