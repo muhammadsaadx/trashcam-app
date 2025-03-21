@@ -133,6 +133,8 @@ def process_number_plate(video_path, model, processed_dir, trocr_processor=None,
                             try:
                                 pixel_values = trocr_processor(pil_img, return_tensors="pt").pixel_values
                                 generated_ids = trocr_model.generate(pixel_values)
+
+                                
                                 ocr_text = trocr_processor.batch_decode(
                                     generated_ids, 
                                     skip_special_tokens=True
@@ -148,7 +150,9 @@ def process_number_plate(video_path, model, processed_dir, trocr_processor=None,
                             except Exception as e:
                                 print(f"OCR Error: {e}")
 
-                # Initialize track history for new objects
+
+                # Initialize track history for new objec
+                # ts
                 if obj_id not in track_history:
                     track_history[obj_id] = []
                 
