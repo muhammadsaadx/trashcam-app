@@ -16,7 +16,7 @@ from .detect_face import process_face, extract_embedding, build_orl_database
 from .detect_car_pedestrian import process_car_pedestrian
 from .identify import identify_process
 from collections import defaultdict
-
+from typing import Tuple, List, Dict, Set, TypeAlias
 
 
 # Configuration
@@ -180,72 +180,206 @@ def upload_to_aws(file_path, target_key):
 
 
 
-def preprocess_json_files(litter_json_path, plate_json_path, face_json_path, car_pedestrian_json_path):
-    # Load litter data
-    with open(litter_json_path, 'r') as f:
-        litter_data = json.load(f)
+
+
+
+
+
+
+
+
+
+
+
+
+# Define type aliases at module level
+BBox: TypeAlias = Tuple[float, float, float, float]
+TrackData: TypeAlias = List[Dict]
+
+def preprocess_json_files(
+    litter_json_path: str,
+    plate_json_path: str,
+    face_json_path: str,
+    car_pedestrian_json_path: str
+) -> None:
+    """Process detection data by filtering tracks and resolving identity conflicts."""
     
-    # Load car_pedestrian data
-    with open(car_pedestrian_json_path, 'r') as f:
-        car_pedestrian_data = json.load(f)
-    
-    # Step 1: Filter out tracks with fewer than 15 frames in the original data
-    original_track_counts = defaultdict(int)
-    for litter in litter_data:
-        original_track_counts[litter['track_id']] += 1
-    
-    valid_track_ids = {tid for tid, count in original_track_counts.items() if count >= 15}
-    
-    # Step 2: Filter litters that overlap with persons by more than 50%
-    # Build a dictionary mapping frame numbers to list of person bounding boxes
-    frame_to_persons = defaultdict(list)
-    for entry in car_pedestrian_data:
-        if entry.get('class_name') == 'person':
-            frame = entry['frame']
-            bbox = (entry['x1'], entry['y1'], entry['x2'], entry['y2'])
-            frame_to_persons[frame].append(bbox)
-    
-    filtered_litters = []
-    for litter in litter_data:
-        # Skip tracks that originally had fewer than 15 frames
-        if litter['track_id'] not in valid_track_ids:
-            continue
+    def load_data(path: str) -> TrackData:
+        with open(path, 'r') as f:
+            return json.load(f)
+
+    def get_valid_tracks(data: TrackData, min_frames: int = 15) -> Set[int]:
+        counter = defaultdict(int)
+        for item in data:
+            counter[item['track_id']] += 1
+        return {tid for tid, count in counter.items() if count >= min_frames}
+
+    def calculate_iou(bbox1: BBox, bbox2: BBox) -> float:
+        x_left = max(bbox1[0], bbox2[0])
+        y_top = max(bbox1[1], bbox2[1])
+        x_right = min(bbox1[2], bbox2[2])
+        y_bottom = min(bbox1[3], bbox2[3])
         
-        frame = litter['frame']
-        l_x1, l_y1 = litter['x1'], litter['y1']
-        l_x2, l_y2 = litter['x2'], litter['y2']
-        litter_area = (l_x2 - l_x1) * (l_y2 - l_y1)
-        
-        if litter_area <= 0:
-            continue  # Skip invalid bounding boxes
-        
-        overlap_too_much = False
-        if frame in frame_to_persons:
-            for (p_x1, p_y1, p_x2, p_y2) in frame_to_persons[frame]:
-                # Calculate intersection coordinates
-                x_left = max(l_x1, p_x1)
-                y_top = max(l_y1, p_y1)
-                x_right = min(l_x2, p_x2)
-                y_bottom = min(l_y2, p_y2)
-                
-                if x_right <= x_left or y_bottom <= y_top:
-                    continue  # No overlap
-                
-                intersection_area = (x_right - x_left) * (y_bottom - y_top)
-                if intersection_area / litter_area > 0.5:
-                    overlap_too_much = True
-                    break  # No need to check other persons
+        if x_right < x_left or y_bottom < y_top:
+            return 0.0
             
-            if overlap_too_much:
-                continue  # Skip this litter
+        intersection = (x_right - x_left) * (y_bottom - y_top)
+        area1 = (bbox1[2] - bbox1[0]) * (bbox1[3] - bbox1[1])
+        area2 = (bbox2[2] - bbox2[0]) * (bbox2[3] - bbox2[1])
+        return intersection / (area1 + area2 - intersection + 1e-6)
+
+    # Load all datasets
+    litter_data = load_data(litter_json_path)
+    plate_data = load_data(plate_json_path)
+    face_data = load_data(face_json_path)
+    car_pedestrian_data = load_data(car_pedestrian_json_path)
+
+    # Get valid track IDs
+    valid_litter = get_valid_tracks(litter_data)
+    valid_plate = get_valid_tracks(plate_data)
+    valid_car_ped = get_valid_tracks(car_pedestrian_data)
+
+    # Process litter data with person overlap check
+    person_boxes = defaultdict(list)
+    for item in car_pedestrian_data:
+        if item.get('class_name') == 'person' and item['track_id'] in valid_car_ped:
+            person_boxes[item['frame']].append(
+                (item['x1'], item['y1'], item['x2'], item['y2'])
+            )
+    
+    filtered_litter = [
+        item for item in litter_data
+        if item['track_id'] in valid_litter
+        and not any(
+            calculate_iou(
+                (item['x1'], item['y1'], item['x2'], item['y2']),
+                p_bbox
+            ) > 0.5
+            for p_bbox in person_boxes.get(item['frame'], [])
+        )
+    ]
+
+    # Process plate data - filter by valid tracks
+    filtered_plate = [
+        item for item in plate_data
+        if item['track_id'] in valid_plate
+    ]
+
+    # Process face data
+    face_class_counts = defaultdict(lambda: defaultdict(int))
+    identity_area_counts = defaultdict(lambda: defaultdict(int))  # NEW: Track area-based counts
+    for face in face_data:
+        if 'identity' in face:
+            face_class_counts[face['track_id']][face['identity']] += 1
+            
+    valid_faces = get_valid_tracks(face_data)
+    face_groups = defaultdict(list)
+    for face in face_data:
+        face_groups[face['frame']].append(face)
+
+    filtered_faces = []
+    for face in face_data:
+        if face['track_id'] not in valid_faces:
+            continue
+            
+        track_id = face['track_id']
+        original_identity = face.get('identity', 'Unknown')
         
-        filtered_litters.append(litter)
+        # NEW: Calculate area key for spatial grouping
+        area_key = (int(face['x1'] // 100), int(face['y1'] // 100))  # Proper tuple creation
+
+        # Check if identity needs replacement
+        if face_class_counts[track_id].get(original_identity, 0) < 15:
+            replacement = None
+            max_iou = 0.0
+            
+            for other_face in face_groups[face['frame']]:
+                if other_face['track_id'] == track_id:
+                    continue
+                
+                other_identity = other_face.get('identity', 'Unknown')
+                other_track_id = other_face['track_id']
+                
+                if face_class_counts[other_track_id].get(other_identity, 0) >= 15:
+                    iou = calculate_iou(
+                        (face['x1'], face['y1'], face['x2'], face['y2']),
+                        (other_face['x1'], other_face['y1'], other_face['x2'], other_face['y2'])
+                    )
+                    
+                    if iou > max_iou and iou > 0.5:
+                        max_iou = iou
+                        replacement = other_identity
+            
+            if replacement:
+                filtered_faces.append({**face, 'identity': replacement})
+                identity_area_counts[area_key][replacement] += 1
+                continue
+                
+        # NEW: Check for overlapping identities in same area with higher frequency
+        current_identity = face.get('identity', 'Unknown')
+        max_count = identity_area_counts[area_key].get(current_identity, 0)
+        replacement = None
+        
+        for other_face in face_groups[face['frame']]:
+            if other_face['track_id'] == track_id:
+                continue
+                
+            other_identity = other_face.get('identity', 'Unknown')
+            iou = calculate_iou(
+                (face['x1'], face['y1'], face['x2'], face['y2']),
+                (other_face['x1'], other_face['y1'], other_face['x2'], other_face['y2'])
+            )
+            
+            if iou > 0.5:
+                other_count = identity_area_counts[area_key].get(other_identity, 0)
+                if other_count > max_count:
+                    max_count = other_count
+                    replacement = other_identity
+        
+        if replacement:
+            filtered_faces.append({**face, 'identity': replacement})
+            identity_area_counts[area_key][replacement] += 1
+        else:
+            filtered_faces.append(face)
+            identity_area_counts[area_key][current_identity] += 1
+
+    # Filter identities with insufficient counts after replacement
+    track_identity_counts = defaultdict(lambda: defaultdict(int))
+    for face in filtered_faces:
+        track_id = face['track_id']
+        identity = face.get('identity', 'Unknown')
+        track_identity_counts[track_id][identity] += 1
+
+    final_filtered_faces = [
+        face for face in filtered_faces
+        if track_identity_counts[face['track_id']][face.get('identity', 'Unknown')] >= 15
+    ]
+
+    # Save processed data
+    def save_data(data: TrackData, path: str) -> None:
+        with open(path, 'w') as f:
+            json.dump(data, f, indent=2)
+
+    save_data(filtered_litter, litter_json_path)
+    save_data(filtered_plate, plate_json_path)
+    save_data(final_filtered_faces, face_json_path)
+
+
+
     
-    # Save the processed data back to the litter JSON file
-    with open(litter_json_path, 'w') as f:
-        json.dump(filtered_litters, f, indent=4)
-    
-    print("Processing completed.")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -353,10 +487,6 @@ def download_and_process_video():
         if 'temp_path' in locals():
             print(f"🧹 Cleaning up temporary file: {temp_path}")
             temp_path.unlink(missing_ok=True)
-
-
-
-
 
 
 
