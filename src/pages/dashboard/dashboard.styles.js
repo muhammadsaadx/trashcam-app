@@ -8,6 +8,7 @@ const styles = {
     backgroundColor: '#F4F7F8',
     padding: '20px',
     fontFamily: "Plus Jakarta Sans, sans-serif",
+    overflowY: 'auto',
   },
   dashboardHeader: {
     fontFamily: "Plus Jakarta Sans, sans-serif",
@@ -20,6 +21,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     marginLeft: '10px',
+    gap: '30px',
   },
   chartRow: {
     display: 'flex',
@@ -36,6 +38,15 @@ const styles = {
     minWidth: '320px',
     maxWidth: '38%',
     height: '10%',
+    fontFamily: "Plus Jakarta Sans, sans-serif",
+  },
+  fullWidthChartCard: {
+    backgroundColor: '#fff',
+    borderRadius: '25px',
+    padding: '25px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
+    width: '100%',
+    minHeight: '380px',
     fontFamily: "Plus Jakarta Sans, sans-serif",
   },
   chartHeader: {
@@ -88,6 +99,34 @@ const styles = {
     margin: 0,
     fontFamily: "Plus Jakarta Sans, sans-serif",
   },
+  subtitleText: {
+    fontSize: '14px',
+    color: '#666',
+    fontWeight: '400',
+    margin: 0,
+    fontFamily: "Plus Jakarta Sans, sans-serif",
+  },
+  // New styles for custom legend
+  legendContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '20px',
+    marginTop: '15px',
+  },
+  legendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  legendBox: {
+    width: '16px',
+    height: '16px',
+  },
+  legendText: {
+    fontSize: '14px',
+    color: '#555',
+    fontFamily: "Plus Jakarta Sans, sans-serif",
+  }
 };
 
 export default styles;

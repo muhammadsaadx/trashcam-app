@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import config from "../../config/config";
 import useStyles from "./listReports.styles";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../layout/sidebar/sidebar";
-
 
 const STATUS_STYLES = {
   Paid: { border: "#98C0A1", background: "#C0F2C9" },
@@ -25,6 +24,12 @@ const Reports = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedFineStatus, setSelectedFineStatus] = useState("");
+  const [locations, setLocations] = useState([]);
+  
   const observer = useRef();
   const lastReportElementRef = useCallback(node => {
     if (isLoading || loadingMore) return;
@@ -41,7 +46,14 @@ const Reports = () => {
 
   const fetchReports = async (start, end) => {
     try {
-      const params = { startRow: start, endRow: end };
+      const params = { 
+        startRow: start, 
+        endRow: end,
+        searchTerm: searchTerm,
+        fineStatus: selectedFineStatus,
+        location: selectedLocation,
+      };
+      
       const { data } = await axios.get(`${config.API_BASE_URL}/reports/get_list_of_reports`, { params });
       return data;
     } catch (err) {
@@ -50,15 +62,26 @@ const Reports = () => {
     }
   };
 
+  // Extract locations from report data
   useEffect(() => {
+    const uniqueLocations = [...new Set(reportData.map(report => report.location))]
+      .sort((a, b) => a.localeCompare(b));
+    setLocations(uniqueLocations);
+  }, [reportData]);
+
+  useEffect(() => {
+    setStartRow(0);
+    setEndRow(10);
+    setHasMore(true);
+    
     (async () => {
       setIsLoading(true);
-      const data = await fetchReports(startRow, endRow);
+      const data = await fetchReports(0, 10);
       setReportData(data);
-      setHasMore(data.length === (endRow - startRow));
+      setHasMore(data.length === 10);
       setIsLoading(false);
     })();
-  }, []); 
+  }, [searchTerm, selectedLocation, selectedFineStatus]); 
 
   const loadMoreReports = async () => {
     if (!hasMore || loadingMore) return;
@@ -81,6 +104,23 @@ const Reports = () => {
     setLoadingMore(false);
   };
 
+  const handleSearch = (e) => setSearchTerm(e.target.value);
+  const handleLocationChange = (e) => setSelectedLocation(e.target.value);
+  const handleStatusChange = (e) => setSelectedFineStatus(e.target.value);
+
+  const applyFilters = () => {
+    setStartRow(0);
+    setEndRow(10);
+    setIsLoading(true);
+    
+    (async () => {
+      const data = await fetchReports(0, 10);
+      setReportData(data);
+      setHasMore(data.length === 10);
+      setIsLoading(false);
+    })();
+  };
+
   const formatTime = (time) => time;
   const formatDate = (date) => date;
 
@@ -91,30 +131,73 @@ const Reports = () => {
       <h1>List of Fines</h1>
 
       <div className={styles.filtersContainer}>
-      <div className={styles.horizontalFilters}>
-        <input type="text" placeholder="Search..." className={styles.searchInput} />
-        
-        {["Locations", "Date", "Time"].map((label) => (
-          <div key={label} className={styles.filterButton}>
-            <span>{label}</span>
-            <span className={styles.filterSubtext}>Select {label}</span>
-          </div>
-        ))}
-        
-        <Button className={styles.analysisButton}>Analysis</Button>
+        <div className={styles.filterSection}>
+          <input 
+            type="text" 
+            placeholder="Search by name or CNIC..." 
+            className={styles.searchInput} 
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+
+          <FormControl variant="outlined" size="small" style={{ minWidth: 250 }}>
+            <InputLabel>Location</InputLabel>
+            <Select
+              value={selectedLocation}
+              onChange={handleLocationChange}
+              label="Location"
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300,
+                  },
+                },
+              }}
+            >
+              <MenuItem value="" className={styles.selectItem}>
+                <em>All Locations</em>
+              </MenuItem>
+              {locations.map((loc) => (
+                <MenuItem key={loc} value={loc}>{loc}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl variant="outlined" size="small" style={{ minWidth: 250 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={selectedFineStatus}
+              onChange={handleStatusChange}
+              label="Status"
+            >
+              <MenuItem value="" className={styles.selectItem}>
+                <em>All Statuses</em>
+              </MenuItem>
+              {['Paid', 'Pending', 'Missed'].map((status) => (
+                <MenuItem 
+                  key={status} 
+                  value={status}
+                  className={styles.selectItem}
+                >
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          
+        </div>
       </div>
-    </div>
 
       <div className={styles.reportContent}>
         <TableContainer component={Paper} className={styles.tableContainer}>
           <Table>
             <TableHead>
-            <TableRow>
-              {["Name of Offender", "Location", "Fine", "Report", "Status"].map((col) => (
-                <TableCell key={col} className={styles.tableHeader}>{col}</TableCell>
-              ))}
-            </TableRow>
-
+              <TableRow>
+                {["Name of Offender", "Location", "Fine", "Report", "Status"].map((col) => (
+                  <TableCell key={col} className={styles.tableHeader}>{col}</TableCell>
+                ))}
+              </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
@@ -124,7 +207,7 @@ const Reports = () => {
               ) : !reportData.length ? (
                 <TableRow><TableCell colSpan={5} align="center">No fines to display</TableCell></TableRow>
               ) : (
-                reportData.map(({ reportid, name, date, time, location, fine, status }, index) => (
+                reportData.map(({ reportid, name, date, time, location, fine, status, cnic }, index) => (
                   <TableRow 
                     key={`${reportid}-${index}`} 
                     className={styles.tableRow} 
@@ -148,7 +231,7 @@ const Reports = () => {
                           navigate(`/reportDetails/${reportid}`);
                         }}
                       >
-                        {name}
+                        View
                       </Button>
                     </TableCell>
                     <TableCell className={styles.statusCell}>
@@ -182,7 +265,6 @@ const Reports = () => {
           </Table>
         </TableContainer>
       </div>
-
     </div>
   );
 };

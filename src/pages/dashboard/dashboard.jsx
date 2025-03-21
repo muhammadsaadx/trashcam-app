@@ -2,7 +2,19 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet.heat";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
+import { 
+  LineChart, 
+  Line, 
+  BarChart,
+  Bar,
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  Area,
+  LabelList 
+} from "recharts";
 import "leaflet/dist/leaflet.css";
 import styles from "./dashboard.styles";
 import config from "../../config/config";
@@ -12,9 +24,6 @@ const MapLayout = ({ data }) => {
   const map = useMap();
 
   useEffect(() => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
     const heat = L.heatLayer(data, { radius: 30, blur: 15, maxZoom: 17 }).addTo(map);
 
     return () => {
@@ -52,10 +61,11 @@ const Dashboard = () => {
         <h3>Dashboard</h3>
       </header>
       <div style={styles.dashboardContent}>
+        {/* Line Chart Section */}
         <div style={styles.chartRow}>
           <div style={styles.chartCard}>
             <div style={styles.chartHeader}>
-              <h2 style={styles.headerText}>Monthly Litter Count</h2>
+              <h2 style={styles.headerText}>Monthly Litter Count (Line)</h2>
               <div style={styles.dropdownContainer}>
                 <select
                   value={selectedYear}
@@ -70,9 +80,9 @@ const Dashboard = () => {
                 </select>
               </div>
             </div>
+            
             <div style={styles.chartWrapper}>
               <ResponsiveContainer width="100%" height="100%">
-
                 <LineChart
                   data={litterRateData[selectedYear] || []}
                   margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
@@ -133,13 +143,97 @@ const Dashboard = () => {
                     animationEasing="ease-in-out"
                   />
                 </LineChart>
-
-                
               </ResponsiveContainer>
             </div>
           </div>
           <MapContainer
             id="map"
+            style={styles.mapContainer}
+            center={[33.6844, 73.0479]}
+            zoom={12}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; OpenStreetMap contributors"
+            />
+            <MapLayout data={litterLocationData} />
+          </MapContainer>
+        </div>
+
+        {/* Bar Chart Section */}
+        <div style={styles.chartRow}>
+          <div style={styles.chartCard}>
+            <div style={styles.chartHeader}>
+              <h2 style={styles.headerText}>Monthly Litter Count (Bar)</h2>
+              <div style={styles.dropdownContainer}>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(+e.target.value)}
+                  style={styles.dropdown}
+                >
+                  {Object.keys(litterRateData).map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            <div style={styles.chartWrapper}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={litterRateData[selectedYear] || []}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
+                  <defs>
+                    <linearGradient id="barColor" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="80%" stopColor="#07715B" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="#07715B" stopOpacity={0.3}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#aaa', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#aaa', fontSize: 12 }}
+                    domain={['auto', 'auto']}
+                  />
+                  <CartesianGrid 
+                    vertical={false} 
+                    horizontal={true}
+                    strokeDasharray="3 3" 
+                    stroke="#eee"
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '5px',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="count" 
+                    fill="url(#barColor)"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationEasing="ease-in-out"
+                  >
+                    <LabelList dataKey="count" position="top" style={{ fontSize: 10, fill: '#07715B' }} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <MapContainer
+            id="map2"
             style={styles.mapContainer}
             center={[33.6844, 73.0479]}
             zoom={12}
