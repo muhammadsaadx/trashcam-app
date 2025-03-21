@@ -173,7 +173,7 @@ def process_number_plate(video_path, model, processed_dir, trocr_processor=None,
         cap.release()
 
         # Save tracking data
-        json_path = Path.cwd() / "temp" / "numberplates.json"
+        json_path = Path.cwd() / "temp" / "plate.json"
         if save_tracking_data(track_history, ocr_history, {}, json_path):
             return json_path
         return None
