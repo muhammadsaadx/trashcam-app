@@ -61,4 +61,4 @@ docker-compose.override.yml
 *ocr_model/
 
 
-*orl_faces/
+orl_faces/
