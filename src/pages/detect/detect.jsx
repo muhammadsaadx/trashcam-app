@@ -1,50 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Sidebar from '../../layout/sidebar/sidebar.jsx';
 import axios from 'axios';
-import config from '../../config/config.js'; // Ensure this file exists with API_BASE_URL
+import config from '../../config/config.js';
 
 function Detect() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState('');
+  const [webcamActive, setWebcamActive] = useState(false);
+  const [mediaStream, setMediaStream] = useState(null);
+  const [webcamError, setWebcamError] = useState('');
+  const videoRef = useRef(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setUploadStatus('');
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert('Please select a video file first');
-      return;
+  useEffect(() => {
+    if (mediaStream && videoRef.current) {
+      videoRef.current.srcObject = mediaStream;
     }
+  }, [mediaStream]);
 
-    setIsUploading(true);
-    setUploadStatus('Uploading...');
-
-    try {
-      const formData = new FormData();
-      formData.append('video', selectedFile);
-
-      // Adjusted endpoint to match FastAPI's `/detect/` instead of `/detect/detect`
-      const response = await axios.post(
-        `${config.API_BASE_URL}/detect/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      console.log('Upload successful:', response.data);
-      setUploadStatus('Upload completed successfully!');
-      setSelectedFile(null); // Clear file input after successful upload
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setUploadStatus(`Upload failed: ${error.response?.data?.detail || error.message}`);
-    } finally {
-      setIsUploading(false);
+  const toggleWebcam = async () => {
+    if (webcamActive) {
+      // Stop the webcam
+      mediaStream.getTracks().forEach(track => track.stop());
+      setMediaStream(null);
+      setWebcamActive(false);
+      setWebcamError('');
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setMediaStream(stream);
+        setWebcamActive(true);
+        setWebcamError('');
+      } catch (error) {
+        console.error('Error accessing webcam:', error);
+        setWebcamError('Could not access webcam. Please check permissions.');
+        setWebcamActive(false);
+      }
     }
   };
 
@@ -59,43 +47,49 @@ function Detect() {
         height: '100vh',
         width: '100%'
       }}>
-        <h2>Video Detection</h2>
+        <h2>Webcam Detection</h2>
 
-        <input 
-          type="file" 
-          accept="video/*" 
-          onChange={handleFileChange} 
-          disabled={isUploading}
-        />
+        <button 
+          onClick={toggleWebcam}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: webcamActive ? '#ff4444' : '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            margin: '20px 0'
+          }}
+        >
+          {webcamActive ? 'Stop Webcam' : 'Start Webcam'}
+        </button>
 
-        {selectedFile && (
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <p>Selected file: {selectedFile.name}</p>
-            <button 
-              onClick={handleUpload} 
-              disabled={isUploading}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: isUploading ? '#ccc' : '#4CAF50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isUploading ? 'not-allowed' : 'pointer'
-              }}
-            >
-              {isUploading ? 'Uploading...' : 'Upload'}
-            </button>
-          </div>
+        {webcamError && (
+          <p style={{ color: 'red', margin: '10px 0' }}>{webcamError}</p>
         )}
 
-        {uploadStatus && (
-          <p style={{ 
-            marginTop: '20px',
-            color: uploadStatus.includes('failed') ? 'red' : 'green'
-          }}>
-            {uploadStatus}
+        {webcamActive && (
+          <video 
+            ref={videoRef}
+            autoPlay
+            playsInline
+            style={{
+              width: '640px',
+              height: '480px',
+              borderRadius: '8px',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+            }}
+          />
+        )}
+
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <p style={{ color: '#666' }}>
+            {webcamActive 
+              ? 'Webcam is active. Click stop to end session.'
+              : 'Click the button above to start webcam detection'}
           </p>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -120,7 +120,7 @@ const MainSection = () => {
       </div>
 
       <div style={litterStatsMainStyle}>
-      <img
+        <img
           src={LitterStatsMain}
           alt="Litter Stats"
           style={{
@@ -173,7 +173,7 @@ const CardsSection = () => {
             <p style={cardTextStyle}>
               Empower our AI engine to manage the purchase and sale of reserved instances, effectively optimizing your AWS expenditure.
             </p>
-            <a href="#" style={cardLinkStyle}>Learn more →</a>
+            <a href="/dashboard" style={cardLinkStyle}>Learn more →</a>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ const CardsSection = () => {
             <p style={cardTextStyle}>
               Gain actionable insights through thorough analysis of your usage behaviors, uncovering fresh savings possibilities.
             </p>
-            <a href="#" style={cardLinkStyle}>Learn more →</a>
+            <a href="/dashboard" style={cardLinkStyle}>Learn more →</a>
           </div>
         </div>
 
@@ -199,7 +199,7 @@ const CardsSection = () => {
             <p style={cardTextStyle}>
               Ensure your data remains protected with our advanced quantum-resistant encryption methods without entanglements.
             </p>
-            <a href="#" style={cardLinkStyle}>Learn more →</a>
+            <a href="/dashboard" style={cardLinkStyle}>Learn more →</a>
           </div>
         </div>
       </div>
@@ -226,7 +226,7 @@ const DetectLitterSection = () => {
           <p style={detectLitterDescriptionStyle}>
             Our technology enables authorities to enforce anti-littering laws effectively and efficiently. The automated system reduces the need for manual monitoring and increases the rate of detection.
           </p>
-          <a href="#" style={detectLitterButtonStyle}>Learn More →</a>
+          <a href="/dashboard" style={detectLitterButtonStyle}>Learn More →</a>
         </div>
       </div>
     </div>
@@ -244,7 +244,7 @@ const FacialRecognitionSection = () => {
           <p style={facialRecognitionDescriptionStyle}>
             Easily capture and document littering incidents using advanced facial and number plate recognition technology. This ensures accurate identification of violators in real-time. With high precision, authorities can act quickly and efficiently to address issues promoting a cleaner, more responsible community.
           </p>
-          <a href="#" style={facialRecognitionButtonStyle}>Learn More →</a>
+          <a href="/dashboard" style={facialRecognitionButtonStyle}>Learn More →</a>
         </div>
 
         <div style={facialRecognitionImageContainerStyle}>
@@ -278,7 +278,7 @@ const LitterTrendsSection = () => {
           <p style={litterTrendsTextStyle}>
             Visualize litter hotspots and monitor violation rates with detailed insights to optimize citywide cleanup efforts.
           </p>
-          <a href="#" style={litterTrendsButtonStyle}>Learn More →</a>
+          <a href="/dashboard" style={litterTrendsButtonStyle}>Learn More →</a>
         </div>
       </div>
     </div>
@@ -298,7 +298,7 @@ const MapSection = () => {
           <p style={mapTextStyle}>
             Monitor littering in real-time and identify high-violation areas. Use this data to streamline cleanup efforts and enhance enforcement, ensuring cleaner and safer public spaces.
           </p>
-          <a href="#" style={mapButtonStyle}>Learn More →</a>
+          <a href="/dashboard" style={mapButtonStyle}>Learn More →</a>
         </div>
 
         <div style={mapCardStyle}>
@@ -331,13 +331,13 @@ const NavigationBar = () => {
       </a>
       <div style={navLinksContainerStyle}>
         <div style={navLinksStyle}>
-          <a href="#features" style={navLinkStyle}>Feature Blog</a>
-          <a href="#about" style={navLinkStyle}>About Us</a>
-          <a href="#blog" style={navLinkStyle}>Blog</a>
-          <a href="#contact" style={navLinkStyle}>Contact Us</a>
+          <a href="/dashboard" style={navLinkStyle}>Feature Blog</a>
+          <a href="/dashboard" style={navLinkStyle}>About Us</a>
+          <a href="/dashboard" style={navLinkStyle}>Blog</a>
+          <a href="/dashboard" style={navLinkStyle}>Contact Us</a>
         </div>
       </div>
-      <a href="#get-started" style={navButtonStyle}>Get started</a>
+      <a href="/dashboard" style={navButtonStyle}>Get started</a>
     </nav>
   );
 };

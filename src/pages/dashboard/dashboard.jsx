@@ -65,7 +65,7 @@ const Dashboard = () => {
         <div style={styles.chartRow}>
           <div style={styles.chartCard}>
             <div style={styles.chartHeader}>
-              <h2 style={styles.headerText}>Monthly Litter Count (Line)</h2>
+              <h2 style={styles.headerText}>Monthly Litter Count</h2>
               <div style={styles.dropdownContainer}>
                 <select
                   value={selectedYear}
@@ -164,7 +164,7 @@ const Dashboard = () => {
         <div style={styles.chartRow}>
           <div style={styles.chartCard}>
             <div style={styles.chartHeader}>
-              <h2 style={styles.headerText}>Monthly Litter Count (Bar)</h2>
+              <h2 style={styles.headerText}>Fines Paid</h2>
               <div style={styles.dropdownContainer}>
                 <select
                   value={selectedYear}
@@ -232,18 +232,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </div>
           </div>
-          <MapContainer
-            id="map2"
-            style={styles.mapContainer}
-            center={[33.6844, 73.0479]}
-            zoom={12}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap contributors"
-            />
-            <MapLayout data={litterLocationData} />
-          </MapContainer>
+          
         </div>
       </div>
     </div>

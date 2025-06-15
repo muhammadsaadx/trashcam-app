@@ -5,6 +5,7 @@ import { FaList, FaSearch } from "react-icons/fa";
 import { RiHome2Line } from "react-icons/ri";
 import { TbReport } from "react-icons/tb";
 import { TfiHelpAlt } from "react-icons/tfi";
+import { MdOutlineCameraAlt } from "react-icons/md"; // Added camera icon
 import styles from "./sidebar.styles"; // Import styles.js
 
 const MainSidebar = () => {
@@ -41,7 +42,10 @@ const MainSidebar = () => {
             Fines
           </MenuItem>
 
-          <MenuItem onClick={() => navigate("/detect")}>
+          <MenuItem 
+            icon={<MdOutlineCameraAlt />} // Added camera icon here
+            onClick={() => navigate("/detect")}
+          >
             Detect
           </MenuItem>
 
