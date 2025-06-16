@@ -121,3 +121,109 @@ async def get_single_report(report_id: str):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
     return report_data
+
+
+
+
+
+
+
+@router.post("/create_report")
+async def create_report(request: Request):
+    params = await request.json()
+
+    # Extract parameters from the request
+    offender_name = params.get('offender_name')
+    offender_cnic = params.get('offender_cnic')
+    offender_address = params.get('offender_address')
+
+    latitude = params.get('latitude')
+    longitude = params.get('longitude')
+    location_str = params.get('location_str')
+    timestamp = params.get('timestamp')
+    fine_status = params.get('fine_status')
+    fine_issued = params.get('fine_issued')
+    info_details = params.get('info_details')
+
+    litter_type_id = params.get('litter_type_id')
+    user_id = params.get('user_id')
+
+    # SQL Queries
+    offender_query = """
+        INSERT INTO offenders (name, cnic, address)
+        VALUES (%s, %s, %s)
+        RETURNING offenderid
+    """
+    
+    report_query = """
+        INSERT INTO reports (latitude, longitude, locationStr, timestamp, fineStatus, fineIssued, infodetails)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        RETURNING reportid
+    """
+    
+    report_litter_query = """
+        INSERT INTO report_litter (reportid, litterid)
+        VALUES (%s, %s)
+    """
+    
+    report_offenders_query = """
+        INSERT INTO report_offenders (reportid, offenderid)
+        VALUES (%s, %s)
+    """
+    
+    user_reports_query = """
+        INSERT INTO user_reports (userid, reportid)
+        VALUES (%s, %s)
+    """
+
+    try:
+        # Insert offender and get offender_id
+        offender_result = await Database.read_from_db(
+            offender_query,
+            (offender_name, offender_cnic, offender_address)
+        )
+        offender_id = offender_result[0][0]
+
+        # Insert report and get report_id
+        report_result = await Database.read_from_db(
+            report_query,
+            (latitude, longitude, location_str, timestamp, fine_status, fine_issued, info_details)
+        )
+        report_id = report_result[0][0]
+
+        # Insert report_litter
+        await Database.read_from_db(report_litter_query, (report_id, litter_type_id))
+
+        # Insert report_offenders
+        await Database.read_from_db(report_offenders_query, (report_id, offender_id))
+
+        # Insert user_reports
+        await Database.read_from_db(user_reports_query, (user_id, report_id))
+
+        # Return structured response
+        report_data = {
+            "report_id": report_id,
+            "location_of_offence": location_str,
+            "latitude": str(latitude),
+            "longitude": str(longitude),
+            "time_of_offence": timestamp.split(" ")[1] if timestamp else None,
+            "date_of_offence": timestamp.split(" ")[0] if timestamp else None,
+            "fine_issued": fine_issued,
+            "fine_status": fine_status,
+            "info_details": info_details,
+            "offenders": [{
+                "offender_name": offender_name,
+                "cnic": offender_cnic,
+                "address": offender_address
+            }],
+            "status": "Report created successfully"
+        }
+
+        return report_data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+
+
