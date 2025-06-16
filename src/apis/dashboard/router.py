@@ -36,3 +36,5 @@ async def get_longitude_latitude():
     heatmap_data = [[float(point[1]), float(point[0]), 1.0] for point in result]  
     return heatmap_data
 
+
+
