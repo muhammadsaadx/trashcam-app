@@ -1,1 +1,1 @@
-# TrashCam Monorepo
+# TrashCam
